@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.HardwareRobot;
-
-// Imports all the neccessary robotcore files and configured hardware in HardwareRobot.
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous2")
 //@Disabled
@@ -34,16 +31,23 @@ public class Autonomous2 extends LinearOpMode {
 
         waitForStart();
 
-        //robot.leftlift.setPower(.85);
-        //robot.rightlift.setPower(1);
+        //Make leftlift and rightlift go down using encoders
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftlift.setPower(1);
+        robot.rightlift.setPower(1);
+        sleep(13000);
 
+        //Drive forward 8 inches
         encoderDrive(robot.DRIVE_SPEED, -8, 8, -8,
                 8, 5);
 
+        //Set servo positions so the color sensors are in place
         robot.servoright.setPosition(.22);
         robot.servoleft.setPosition(.87);
         sleep(3000);
 
+        //Using Color Sensors to compare the red values between all three
         NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
         NormalizedRGBA color_center = robot.CScenter.getNormalizedColors();
         NormalizedRGBA color_right = robot.CSright.getNormalizedColors();

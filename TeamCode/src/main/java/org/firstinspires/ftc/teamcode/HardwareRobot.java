@@ -55,13 +55,5 @@ public class HardwareRobot
         CSright = hwMap.get(NormalizedColorSensor.class, "CSright");
         CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
         CSleft = hwMap.get(NormalizedColorSensor.class, "CSleft");
-
-        frontleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backleft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backright.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightlift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftlift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
     }
 }
