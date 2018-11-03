@@ -17,7 +17,7 @@ public class HardwareRobot
     public Servo servoleft = null;
     public Servo servoright = null;
     public NormalizedColorSensor CSright = null;
-    public NormalizedColorSensor CScenter = null;
+    //public NormalizedColorSensor CScenter = null;
     public NormalizedColorSensor CSleft = null;
 
     /* local OpMode members. */
@@ -53,7 +53,7 @@ public class HardwareRobot
         servoleft = hwMap.get(Servo.class, "servoleft");
         servoright = hwMap.get(Servo.class, "servoright");
         CSright = hwMap.get(NormalizedColorSensor.class, "CSright");
-        CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
+        //CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
         CSleft = hwMap.get(NormalizedColorSensor.class, "CSleft");
     }
 }

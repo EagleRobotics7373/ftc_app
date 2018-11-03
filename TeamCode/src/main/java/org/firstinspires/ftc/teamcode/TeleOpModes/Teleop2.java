@@ -17,7 +17,7 @@ public class Teleop2 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        int liftControl = 0;
+        int liftSwitch = 0;
 
         robot.init(hardwareMap);
 
@@ -40,22 +40,36 @@ public class Teleop2 extends LinearOpMode {
             robot.frontright.setPower(-y - x - z);
             robot.backright.setPower(-y + x - z);
 
-            robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
             // Y button changes lifts to running with both sticks or with just one
-            if (liftControl % 2 == 0) {
-                robot.rightlift.setPower(gamepad2.right_stick_y);
-                robot.leftlift.setPower(gamepad2.right_stick_y);
+            if (liftSwitch % 2 == 0) {
+                int liftControl = (int) (-gamepad2.right_stick_y * 100);
+
+                robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControl);
+                robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControl);
+
+                robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                robot.rightlift.setPower(1);
+                robot.leftlift.setPower(1);
             }
 
-            else if (liftControl % 2 == 1) {
-                robot.rightlift.setPower(gamepad2.right_stick_y);
-                robot.leftlift.setPower(gamepad2.left_stick_y);
+            else if (liftSwitch % 2 == 1) {
+                int liftControlright = (int) (-gamepad2.right_stick_y * 100);
+                int liftControlleft = (int) (-gamepad2.left_stick_y * 100);
+
+                robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControlright);
+                robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControlleft);
+
+                robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                robot.rightlift.setPower(.5);
+                robot.leftlift.setPower(.5);
             }
 
             if (gamepad2.y) {
-                ++liftControl;}
+                ++liftSwitch;}
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

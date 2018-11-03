@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
@@ -17,13 +18,15 @@ public class Autonomous2 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        robot.init(hardwareMap);
+        /*robot.init(hardwareMap);
 
+        //Stop and reset Encoders
         robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        //Run using Encoders
         robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -32,8 +35,6 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         //Make leftlift and rightlift go down using encoders
-        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
         sleep(13000);
@@ -52,18 +53,24 @@ public class Autonomous2 extends LinearOpMode {
         NormalizedRGBA color_center = robot.CScenter.getNormalizedColors();
         NormalizedRGBA color_right = robot.CSright.getNormalizedColors();
         sleep(500);
+
+        //If CSleft has more red than the other two, move to the left and then forward
         if (color_left.red > color_center.red && color_left.red > color_right.red) {
             //Hit left?
             telemetry.addLine("Hit left");
             telemetry.update();
             sleep(5000);
         }
+
+        //If CScenter has more red than the other two, move forward
         else if (color_center.red > color_left.red && color_center.red > color_right.red) {
             //Hit middle?
             telemetry.addLine("Hit center");
             telemetry.update();
             sleep(5000);
         }
+
+        //If CSright has more red than the other two, move right and then forward
         else if (color_right.red > color_center.red && color_right.red > color_left.red) {
             //Hit right?
             telemetry.addLine("Hit right");
@@ -71,14 +78,8 @@ public class Autonomous2 extends LinearOpMode {
             sleep(5000);
         }
     }
-    private void MotorPower ( double frontright, double backright, double frontleft,
-                              double backleft){
-        robot.frontright.setPower(frontright);
-        robot.backright.setPower(backright);
-        robot.frontleft.setPower(frontleft);
-        robot.backleft.setPower(backleft);
-    }
 
+    //encoderDrive method to make the robot move with input in inches
     public void encoderDrive ( double speed, double frontleftinches, double frontrightinches,
                                double backleftinches, double backrightinches, double timeoutS){
 
@@ -115,16 +116,13 @@ public class Autonomous2 extends LinearOpMode {
                     (robot.frontleft.isBusy() && robot.frontright.isBusy())) {
             }
 
-            // Stop all motion
-            robot.frontleft.setPower(0);
-            robot.backleft.setPower(0);
-            robot.frontright.setPower(0);
-            robot.backright.setPower(0);
+            //Use the ZeroPower method to stop all motion
+            robot.ZeroPower();
 
             robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        }*/
     }
 }
