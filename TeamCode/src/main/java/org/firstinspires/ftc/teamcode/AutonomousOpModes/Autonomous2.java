@@ -18,7 +18,7 @@ public class Autonomous2 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        /*robot.init(hardwareMap);
+        robot.init(hardwareMap);
 
         //Stop and reset Encoders
         robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -35,10 +35,14 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         //Make leftlift and rightlift go down using encoders
+        robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
-        sleep(13000);
+        sleep(1700);
+        robot.ZeroPower();
 
+/*
         //Drive forward 8 inches
         encoderDrive(robot.DRIVE_SPEED, -8, 8, -8,
                 8, 5);
@@ -76,7 +80,7 @@ public class Autonomous2 extends LinearOpMode {
             telemetry.addLine("Hit right");
             telemetry.update();
             sleep(5000);
-        }
+        }*/
     }
 
     //encoderDrive method to make the robot move with input in inches
@@ -90,10 +94,10 @@ public class Autonomous2 extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-            frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH);
-            backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH);
-            frontrightTarget = robot.frontright.getCurrentPosition() + (int) (frontrightinches * robot.COUNTS_PER_INCH);
-            backrightTarget = robot.backright.getCurrentPosition() + (int) (backrightinches * robot.COUNTS_PER_INCH);
+            frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH_REV);
+            backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH_REV);
+            frontrightTarget = robot.frontright.getCurrentPosition() + (int) (frontrightinches * robot.COUNTS_PER_INCH_REV);
+            backrightTarget = robot.backright.getCurrentPosition() + (int) (backrightinches * robot.COUNTS_PER_INCH_REV);
 
             robot.frontleft.setTargetPosition(frontleftTarget);
             robot.backleft.setTargetPosition(backleftTarget);
@@ -123,6 +127,6 @@ public class Autonomous2 extends LinearOpMode {
             robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }*/
+        }
     }
 }
