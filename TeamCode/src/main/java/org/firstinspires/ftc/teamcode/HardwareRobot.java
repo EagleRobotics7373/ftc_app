@@ -22,7 +22,7 @@ public class HardwareRobot
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
-    static final double COUNTS_PER_MOTOR_REV = 2240;
+    static final double COUNTS_PER_MOTOR_REV = 1120;
     static final double COUNTS_PER_MOTOR_NEVEREST = 280;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);

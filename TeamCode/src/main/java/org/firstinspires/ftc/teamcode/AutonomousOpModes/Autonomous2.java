@@ -39,18 +39,22 @@ public class Autonomous2 extends LinearOpMode {
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
-        sleep(1700);
+        sleep(1680);
         robot.ZeroPower();
 
-/*
-        //Drive forward 8 inches
-        encoderDrive(robot.DRIVE_SPEED, -8, 8, -8,
-                8, 5);
+        // Strafe left 4 inches
+        encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 5);
+        // Go Forward 4 inches
+        encoderDrive(robot.DRIVE_SPEED, -4, 4,-4, 4, 2);
+        // Strafe right 4 inches
+        encoderDrive(robot.DRIVE_SPEED, -4, -4, 4, 4, 2);
+        //Drive forward 19 inches
+        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 2);
 
         //Set servo positions so the color sensors are in place
-        robot.servoright.setPosition(.22);
-        robot.servoleft.setPosition(.87);
-        sleep(3000);
+        robot.servoleft.setPosition(.85);
+        robot.servoright.setPosition(.05);
+        sleep(2000);
 
         //Using Color Sensors to compare the red values between all three
         NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
@@ -62,6 +66,9 @@ public class Autonomous2 extends LinearOpMode {
         if (color_left.red > color_center.red && color_left.red > color_right.red) {
             //Hit left?
             telemetry.addLine("Hit left");
+            telemetry.addData("red center", color_center.red);
+            telemetry.addData("red left", color_left.red);
+            telemetry.addData("red right", color_right.red);
             telemetry.update();
             sleep(5000);
         }
@@ -70,6 +77,9 @@ public class Autonomous2 extends LinearOpMode {
         else if (color_center.red > color_left.red && color_center.red > color_right.red) {
             //Hit middle?
             telemetry.addLine("Hit center");
+            telemetry.addData("red center", color_center.red);
+            telemetry.addData("red left", color_left.red);
+            telemetry.addData("red right", color_right.red);
             telemetry.update();
             sleep(5000);
         }
@@ -78,9 +88,12 @@ public class Autonomous2 extends LinearOpMode {
         else if (color_right.red > color_center.red && color_right.red > color_left.red) {
             //Hit right?
             telemetry.addLine("Hit right");
+            telemetry.addData("red center", color_center.red);
+            telemetry.addData("red left", color_left.red);
+            telemetry.addData("red right", color_right.red);
             telemetry.update();
             sleep(5000);
-        }*/
+        }
     }
 
     //encoderDrive method to make the robot move with input in inches
