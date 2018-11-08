@@ -25,21 +25,36 @@ public class Autonomous2 extends LinearOpMode {
         robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //Run using Encoders
         robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
+        encoderDrive(.3, -37, 37, -37, 37, 2);
+        encoderDrive(robot.DRIVE_SPEED, 33, 33, 33, 33, 2);
+        encoderDrive(robot.DRIVE_SPEED, -150, 150, -150, 150, 2);
+
         //Make leftlift and rightlift go down using encoders
-        robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        /*robot.leftlift.setTargetPosition(3400);
+        robot.rightlift.setTargetPosition(3400);
+
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
-        sleep(1680);
+
+        while (robot.leftlift.isBusy() && robot.rightlift.isBusy()){
+        }
+
         robot.ZeroPower();
 
         // Strafe left 4 inches
@@ -49,12 +64,12 @@ public class Autonomous2 extends LinearOpMode {
         // Strafe right 4 inches
         encoderDrive(robot.DRIVE_SPEED, -4, -4, 4, 4, 2);
         //Drive forward 19 inches
-        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 2);
+        encoderDrive(robot.DRIVE_SPEED, -18, 18, -18, 18, 2);
 
         //Set servo positions so the color sensors are in place
-        robot.servoleft.setPosition(.85);
+        robot.servoleft.setPosition(.855);
         robot.servoright.setPosition(.05);
-        sleep(2000);
+        sleep(1000);
 
         //Using Color Sensors to compare the red values between all three
         NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
@@ -62,38 +77,40 @@ public class Autonomous2 extends LinearOpMode {
         NormalizedRGBA color_right = robot.CSright.getNormalizedColors();
         sleep(500);
 
+        color_center.red *= 15;
+
         //If CSleft has more red than the other two, move to the left and then forward
-        if (color_left.red > color_center.red && color_left.red > color_right.red) {
+        if (color_left.red < color_center.red  && color_left.red < color_right.red) {
             //Hit left?
             telemetry.addLine("Hit left");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(5000);
+            sleep(15000);
         }
 
         //If CScenter has more red than the other two, move forward
-        else if (color_center.red > color_left.red && color_center.red > color_right.red) {
+        else if (color_center.red < color_left.red && color_center.red < color_right.red) {
             //Hit middle?
             telemetry.addLine("Hit center");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(5000);
+            sleep(15000);
         }
 
         //If CSright has more red than the other two, move right and then forward
-        else if (color_right.red > color_center.red && color_right.red > color_left.red) {
+        else if (color_right.red < color_center.red && color_right.red < color_left.red) {
             //Hit right?
             telemetry.addLine("Hit right");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(5000);
-        }
+            sleep(15000);
+        }*/
     }
 
     //encoderDrive method to make the robot move with input in inches
@@ -106,6 +123,16 @@ public class Autonomous2 extends LinearOpMode {
         int backrightTarget;
 
         if (opModeIsActive()) {
+
+            robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH_REV);
             backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH_REV);

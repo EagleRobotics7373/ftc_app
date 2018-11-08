@@ -27,7 +27,7 @@ public class HardwareRobot
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     public static final double COUNTS_PER_INCH_NEVEREST = (COUNTS_PER_MOTOR_NEVEREST) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static final double DRIVE_SPEED = 0.6;
+    public static final double DRIVE_SPEED = 0.4;
 
 
 
