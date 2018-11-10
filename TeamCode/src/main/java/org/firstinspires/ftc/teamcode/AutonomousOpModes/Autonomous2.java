@@ -20,7 +20,7 @@ public class Autonomous2 extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        //Stop and reset Encoders
+        // Stop and reset Encoders
         robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -28,7 +28,7 @@ public class Autonomous2 extends LinearOpMode {
         robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //Run using Encoders
+        // Run using Encoders
         robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -38,7 +38,7 @@ public class Autonomous2 extends LinearOpMode {
 
         waitForStart();
 
-        //Make leftlift and rightlift go down using encoders
+        // Make leftlift and rightlift go down using encoders
         /*robot.leftlift.setTargetPosition(3400);
         robot.rightlift.setTargetPosition(3400);
 
@@ -66,7 +66,7 @@ public class Autonomous2 extends LinearOpMode {
         // Move back 2 inches
         encoderDrive(robot.DRIVE_SPEED, 2, -2, 2, -2, 2);
 
-        //Set servo positions to the proper position
+        // Set servo positions to the proper position
         robot.servoleft.setPosition(.655);
         robot.servoright.setPosition(.25);
         sleep(500);
@@ -81,8 +81,7 @@ public class Autonomous2 extends LinearOpMode {
         }
         sleep(500);
 
-        //Using Color Sensors to compare the red values between all three
-
+        // Using Color Sensors to compare the red values between all three
         NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
         NormalizedRGBA color_right = robot.CSright.getNormalizedColors();
         sleep(500);
@@ -90,9 +89,7 @@ public class Autonomous2 extends LinearOpMode {
         robot.servoleft.setPosition(.48);
         robot.servoright.setPosition(.41);
 
-        // color_center.red *= 15;
-
-        // If CSleft has more red than the other two, move to the left and then forward
+        // Hit left condition
         if (color_left.red < color_center.red  && color_left.red < color_right.red) {
             telemetry.addLine("Hit left");
             telemetry.addData("red center", color_center.red);
@@ -100,19 +97,22 @@ public class Autonomous2 extends LinearOpMode {
             telemetry.addData("red right", color_right.red);
             telemetry.update();
             sleep(1000);
-            // Hit left?
+            // Move backwards 5 inches
             encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
             // Strafe left 15.5 inches
-            encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5, -15.5, -15.5, 2);
-            // Move forward 15 inches
-            encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 2);
+            strafeLeft(15.5, 2);
+            // Move forward 28 inches
+            encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
             // Rotate left 45 degrees
             encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+            // robot.servomarker.setPosition();
+            strafeLeft(30, 2);
+            strafeLeft(30, 2);
+            strafeLeft(30, 2);
         }
 
-        //If CScenter has more red than the other two, move forward
+        // Hit middle condition
         else if (color_center.red < color_left.red && color_center.red < color_right.red) {
-            //Hit middle?
             telemetry.addLine("Hit center");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
@@ -129,12 +129,12 @@ public class Autonomous2 extends LinearOpMode {
             encoderDrive(robot.DRIVE_SPEED, 5, -5, 5,-5, 1);
             sleep(1000);
             // Strafe left 90 inches
-            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
-            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
-            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
+            strafeLeft(30, 2);
+            strafeLeft(30, 2);
+            strafeLeft(30, 2);
         }
 
-        // If CSright has more red than the other two, move right and then forward
+        // Hit right condition
         else if (color_right.red < color_center.red && color_right.red < color_left.red) {
             telemetry.addLine("Hit right");
             telemetry.addData("red center", color_center.red);
@@ -142,14 +142,22 @@ public class Autonomous2 extends LinearOpMode {
             telemetry.addData("red right", color_right.red);
             telemetry.update();
             sleep(1000);
-            // Hit right?
+            // Move backwards 5 inches
             encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-            // Strafe left 15.5 inches
-            encoderDrive(robot.DRIVE_SPEED, -15.5, -15.5, 15.5, 15.5, 2);
+            // Strafe right 15.5 inches
+            strafeRight(15.5, 2);
+            // Move forward 15 inches
+            encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
+            // Rotate right 45 degrees
+            encoderDrive(robot.DRIVE_SPEED, -11, -11, -11, -11, 2);
+            // robot.servomarker.setPosition();
+            strafeRight(30, 2);
+            strafeRight(30, 2);
+            strafeRight(30, 2);
         }
     }
 
-    //encoderDrive method to make the robot move with input in inches
+    // encoderDrive method to make the robot move with input in inches
     public void encoderDrive ( double speed, double frontleftinches, double frontrightinches,
                                double backleftinches, double backrightinches, double timeoutS){
 
@@ -196,7 +204,7 @@ public class Autonomous2 extends LinearOpMode {
                     (robot.frontleft.isBusy() && robot.frontright.isBusy())) {
             }
 
-            //Use the ZeroPower method to stop all motion
+            // Use the ZeroPower method to stop all motion
             robot.ZeroPower();
 
             robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -204,5 +212,11 @@ public class Autonomous2 extends LinearOpMode {
             robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+    public void strafeLeft(double inches, double timeout){
+        encoderDrive(robot.DRIVE_SPEED, inches, inches, -inches, -inches, timeout);
+    }
+    public void strafeRight(double inches, double timeout){
+        encoderDrive(robot.DRIVE_SPEED, -inches, -inches, inches, inches, timeout);
     }
 }

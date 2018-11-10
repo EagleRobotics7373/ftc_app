@@ -18,6 +18,7 @@ public class Teleop2 extends LinearOpMode {
     public void runOpMode() {
 
         int liftSwitch = 0;
+        int directionSwitch = 0;
 
         robot.init(hardwareMap);
 
@@ -30,15 +31,6 @@ public class Teleop2 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            double x = gamepad1.left_stick_x;
-            double y = gamepad1.left_stick_y;
-            double z = gamepad1.right_stick_x;
-
-            robot.frontleft.setPower(y - x - z);
-            robot.backleft.setPower(y + x - z);
-            robot.frontright.setPower(-y - x - z);
-            robot.backright.setPower(-y + x - z);
 
             robot.servoleft.setPosition(.48);
             robot.servoright.setPosition(.41);
@@ -71,8 +63,33 @@ public class Teleop2 extends LinearOpMode {
                 robot.leftlift.setPower(.5);
             }
 
+            if (directionSwitch % 2 == 0){
+                double x = gamepad1.left_stick_x;
+                double y = gamepad1.left_stick_y;
+                double z = gamepad1.right_stick_x;
+
+                robot.frontleft.setPower(y - x - z);
+                robot.backleft.setPower(y + x - z);
+                robot.frontright.setPower(-y - x - z);
+                robot.backright.setPower(-y + x - z);
+            }
+            else if (directionSwitch % 2 == 1){
+                double x = -gamepad1.left_stick_x;
+                double y = -gamepad1.left_stick_y;
+                double z = gamepad1.right_stick_x;
+
+                robot.frontleft.setPower(y - x - z);
+                robot.backleft.setPower(y + x - z);
+                robot.frontright.setPower(-y - x - z);
+                robot.backright.setPower(-y + x - z);
+            }
+
             if (gamepad2.y) {
-                ++liftSwitch;}
+                ++liftSwitch;
+            }
+            if (gamepad1.y) {
+                ++directionSwitch;
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

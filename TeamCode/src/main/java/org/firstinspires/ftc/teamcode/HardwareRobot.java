@@ -19,6 +19,7 @@ public class HardwareRobot
     public DcMotor leftlift = null;
     public Servo servoleft = null;
     public Servo servoright = null;
+    //public Servo servomarker = null;
     public NormalizedColorSensor CSright = null;
     public NormalizedColorSensor CScenter = null;
     public NormalizedColorSensor CSleft = null;
@@ -60,6 +61,7 @@ public class HardwareRobot
         leftlift = hwMap.get(DcMotor.class, "leftlift");
         servoleft = hwMap.get(Servo.class, "servoleft");
         servoright = hwMap.get(Servo.class, "servoright");
+        //servomarker = hwMap.get(Servo.class, "servomarker");
         CSright = hwMap.get(NormalizedColorSensor.class, "CSright");
         CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
         CSleft = hwMap.get(NormalizedColorSensor.class, "CSleft");
