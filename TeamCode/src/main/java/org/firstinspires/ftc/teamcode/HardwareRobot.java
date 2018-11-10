@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.AutonomousOpModes.Autonomous2;
 
 public class HardwareRobot
 {
@@ -27,9 +30,7 @@ public class HardwareRobot
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     public static final double COUNTS_PER_INCH_NEVEREST = (COUNTS_PER_MOTOR_NEVEREST) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static final double DRIVE_SPEED = 0.4;
-
-
+    public static final double DRIVE_SPEED = 0.3;
 
     public void ZeroPower(){
         frontleft.setPower(0);

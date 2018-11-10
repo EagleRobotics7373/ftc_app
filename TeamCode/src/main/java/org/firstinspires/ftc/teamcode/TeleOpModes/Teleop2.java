@@ -40,6 +40,9 @@ public class Teleop2 extends LinearOpMode {
             robot.frontright.setPower(-y - x - z);
             robot.backright.setPower(-y + x - z);
 
+            robot.servoleft.setPosition(.48);
+            robot.servoright.setPosition(.41);
+
             // Y button changes lifts to running with both sticks or with just one
             if (liftSwitch % 2 == 0) {
                 int liftControl = (int) (-gamepad2.right_stick_y * 100);

@@ -38,10 +38,6 @@ public class Autonomous2 extends LinearOpMode {
 
         waitForStart();
 
-        encoderDrive(.3, -37, 37, -37, 37, 2);
-        encoderDrive(robot.DRIVE_SPEED, 33, 33, 33, 33, 2);
-        encoderDrive(robot.DRIVE_SPEED, -150, 150, -150, 150, 2);
-
         //Make leftlift and rightlift go down using encoders
         /*robot.leftlift.setTargetPosition(3400);
         robot.rightlift.setTargetPosition(3400);
@@ -58,36 +54,60 @@ public class Autonomous2 extends LinearOpMode {
         robot.ZeroPower();
 
         // Strafe left 4 inches
-        encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 5);
+        encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 2);
         // Go Forward 4 inches
         encoderDrive(robot.DRIVE_SPEED, -4, 4,-4, 4, 2);
         // Strafe right 4 inches
         encoderDrive(robot.DRIVE_SPEED, -4, -4, 4, 4, 2);
-        //Drive forward 19 inches
-        encoderDrive(robot.DRIVE_SPEED, -18, 18, -18, 18, 2);
+        //Drive forward 20.5 inches
+        encoderDrive(robot.DRIVE_SPEED, -20, 20, -20, 20, 5);*/
 
-        //Set servo positions so the color sensors are in place
-        robot.servoleft.setPosition(.855);
-        robot.servoright.setPosition(.05);
-        sleep(1000);
+        NormalizedRGBA color_center = robot.CScenter.getNormalizedColors();
+        // Move back 2 inches
+        encoderDrive(robot.DRIVE_SPEED, 2, -2, 2, -2, 2);
+
+        //Set servo positions to the proper position
+        robot.servoleft.setPosition(.655);
+        robot.servoright.setPosition(.25);
+        sleep(500);
+
+        while (robot.servoleft.getPosition() < .855) {
+            robot.servoleft.setPosition(robot.servoleft.getPosition() + .05);
+            sleep(100);
+        }
+        while (robot.servoright.getPosition() > .1) {
+            robot.servoright.setPosition(robot.servoright.getPosition() - .05);
+            sleep(100);
+        }
+        sleep(500);
 
         //Using Color Sensors to compare the red values between all three
+
         NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
-        NormalizedRGBA color_center = robot.CScenter.getNormalizedColors();
         NormalizedRGBA color_right = robot.CSright.getNormalizedColors();
         sleep(500);
 
-        color_center.red *= 15;
+        robot.servoleft.setPosition(.48);
+        robot.servoright.setPosition(.41);
 
-        //If CSleft has more red than the other two, move to the left and then forward
+        // color_center.red *= 15;
+
+        // If CSleft has more red than the other two, move to the left and then forward
         if (color_left.red < color_center.red  && color_left.red < color_right.red) {
-            //Hit left?
             telemetry.addLine("Hit left");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(15000);
+            sleep(1000);
+            // Hit left?
+            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
+            // Strafe left 15.5 inches
+            encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5, -15.5, -15.5, 2);
+            // Move forward 15 inches
+            encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 2);
+            // Rotate left 45 degrees
+            encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
         }
 
         //If CScenter has more red than the other two, move forward
@@ -98,19 +118,35 @@ public class Autonomous2 extends LinearOpMode {
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(15000);
+            sleep(1000);
+            // Move forward 37 inches
+            encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
+            // Rotate Left 45 degrees
+            encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+            // Move Forward 13 inches
+            encoderDrive(robot.DRIVE_SPEED, -12, 12, -12, 12, 1);
+            // Move backwards 5 inches
+            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5,-5, 1);
+            sleep(1000);
+            // Strafe left 90 inches
+            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
+            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
+            encoderDrive(robot.DRIVE_SPEED, 30, 30, -30, -30, 2);
         }
 
-        //If CSright has more red than the other two, move right and then forward
+        // If CSright has more red than the other two, move right and then forward
         else if (color_right.red < color_center.red && color_right.red < color_left.red) {
-            //Hit right?
             telemetry.addLine("Hit right");
             telemetry.addData("red center", color_center.red);
             telemetry.addData("red left", color_left.red);
             telemetry.addData("red right", color_right.red);
             telemetry.update();
-            sleep(15000);
-        }*/
+            sleep(1000);
+            // Hit right?
+            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
+            // Strafe left 15.5 inches
+            encoderDrive(robot.DRIVE_SPEED, -15.5, -15.5, 15.5, 15.5, 2);
+        }
     }
 
     //encoderDrive method to make the robot move with input in inches
