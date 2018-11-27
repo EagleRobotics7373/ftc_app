@@ -4,14 +4,32 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.comp.Flow;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
+
+import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous2")
 //@Disabled
 public class Autonomous2 extends LinearOpMode {
-
+    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
+    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
+    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    private static final String VUFORIA_KEY = "AeHdjCr/////AAABmVxnuq1NN0iotO8KeuyOVIxb+p8H7X" +
+            "/bxZ2FUs7eXhvv4vKcW1eod6wHyu3ZYIHJU0JWD/BoNEi4Kl1POShvtrW9iUEoRqylurPbfs9S+CxH84" +
+            "YxYmjnf+F7pxoWYS1V9h/JnW7hIWs2JUEXElL8SoBV9mcOUtOn/hZW+X0TEdCeHNp8jrRSFqcr8UX/+r" +
+            "V6GGlYFedJpbmh+v6Ilj2zIeHYErnfCZvZIP7PfcO/sAgGSKQQxVPlvz9kV14trx+8vTBqnN8eSrb8xF" +
+            "i/XLU9b+wV7cvpxTPeno9kvoROfH/mEZO/6iZEi89Evd7ZBgqu+NeK4Nfg+oMvcozYkIrTatKqPZ6iY7" +
+            "w/YWLKGdib+I98";
+    private VuforiaLocalizer vuforia;
+    private TFObjectDetector tfod;
     HardwareRobot robot = new HardwareRobot();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -39,8 +57,8 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         // Make leftlift and rightlift go down using encoders
-        /*robot.leftlift.setTargetPosition(3400);
-        robot.rightlift.setTargetPosition(3400);
+        robot.leftlift.setTargetPosition(3100);
+        robot.rightlift.setTargetPosition(3100);
 
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -48,7 +66,7 @@ public class Autonomous2 extends LinearOpMode {
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
 
-        while (robot.leftlift.isBusy() && robot.rightlift.isBusy()){
+        while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
         }
 
         robot.ZeroPower();
@@ -56,104 +74,94 @@ public class Autonomous2 extends LinearOpMode {
         // Strafe left 4 inches
         encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 2);
         // Go Forward 4 inches
-        encoderDrive(robot.DRIVE_SPEED, -4, 4,-4, 4, 2);
-        // Strafe right 4 inches
-        encoderDrive(robot.DRIVE_SPEED, -4, -4, 4, 4, 2);
-        //Drive forward 20.5 inches
-        encoderDrive(robot.DRIVE_SPEED, -20, 20, -20, 20, 5);*/
+        encoderDrive(robot.DRIVE_SPEED, -4, 4, -4, 4, 2);
+        // Strafe right 5 inches
+        encoderDrive(robot.DRIVE_SPEED, -5, -5, 5, 5, 2);
+        //Drive forward 20 inches
+        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 5);
 
-        NormalizedRGBA color_center = robot.CScenter.getNormalizedColors();
-        // Move back 2 inches
-        encoderDrive(robot.DRIVE_SPEED, 2, -2, 2, -2, 2);
+        initVuforia();
+        initTfod();
 
-        // Set servo positions to the proper position
-        robot.servoleft.setPosition(.655);
-        robot.servoright.setPosition(.25);
-        sleep(500);
+        if (opModeIsActive()) {
+            // Activate Tensor Flow Object Detection.
+            if (tfod != null) {
+                tfod.activate();
+            }
 
-        while (robot.servoleft.getPosition() < .855) {
-            robot.servoleft.setPosition(robot.servoleft.getPosition() + .05);
-            sleep(100);
-        }
-        while (robot.servoright.getPosition() > .1) {
-            robot.servoright.setPosition(robot.servoright.getPosition() - .05);
-            sleep(100);
-        }
-        sleep(500);
+            while (opModeIsActive()) {
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        if (updatedRecognitions.size() == 3) {
+                            int goldMineralX = -1;
+                            int silverMineral1X = -1;
+                            int silverMineral2X = -1;
+                            for (Recognition recognition : updatedRecognitions) {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    goldMineralX = (int) recognition.getLeft();
+                                } else if (silverMineral1X == -1) {
+                                    silverMineral1X = (int) recognition.getLeft();
+                                } else {
+                                    silverMineral2X = (int) recognition.getLeft();
+                                }
+                            }
+                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                    // Move backwards 5 inches
+                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
+                                    // Strafe left 15.5 inches
+                                    strafeLeft(15.5, 2);
+                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
+                                    // Move forward 28 inches
+                                    encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
+                                    // Rotate left 45 degrees
+                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                    strafeRight(10, 2);
+                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                    // Move backwards 5 inches
+                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
+                                    // Strafe right 15.5 inches
+                                    strafeRight(15.5, 2);
+                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
+                                    // Move forward 15 inches
+                                    encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
+                                    // Rotate left 180 degrees
+                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
+                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
+                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
+                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
+                                    strafeRight(10, 2);
+                                    robot.servomarker.setPosition(0);
+                                } else {
+                                    telemetry.addData("Gold Mineral Position", "Center");
+                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
+                                    // Move forward 37 inches
+                                    encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
+                                    // Rotate Left 45 degrees
+                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                    robot.servomarker.setPosition(0);
+                                    // Move Forward 13 inches
+                                    encoderDrive(robot.DRIVE_SPEED, -16, 16, -16, 16, 1);
+                                    // Move backwards 5 inches
+                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 1);
+                                    sleep(1000);
+                                }
+                            }
+                        }
+                        telemetry.update();
+                    }
+                }
 
-        // Using Color Sensors to compare the red values between all three
-        NormalizedRGBA color_left = robot.CSleft.getNormalizedColors();
-        NormalizedRGBA color_right = robot.CSright.getNormalizedColors();
-        sleep(500);
-
-        robot.servoleft.setPosition(.48);
-        robot.servoright.setPosition(.41);
-
-        // Hit left condition
-        if (color_left.red < color_center.red  && color_left.red < color_right.red) {
-            telemetry.addLine("Hit left");
-            telemetry.addData("red center", color_center.red);
-            telemetry.addData("red left", color_left.red);
-            telemetry.addData("red right", color_right.red);
-            telemetry.update();
-            sleep(1000);
-            // Move backwards 5 inches
-            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-            // Strafe left 15.5 inches
-            strafeLeft(15.5, 2);
-            // Move forward 28 inches
-            encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
-            // Rotate left 45 degrees
-            encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-            // robot.servomarker.setPosition();
-            strafeLeft(30, 2);
-            strafeLeft(30, 2);
-            strafeLeft(30, 2);
-        }
-
-        // Hit middle condition
-        else if (color_center.red < color_left.red && color_center.red < color_right.red) {
-            telemetry.addLine("Hit center");
-            telemetry.addData("red center", color_center.red);
-            telemetry.addData("red left", color_left.red);
-            telemetry.addData("red right", color_right.red);
-            telemetry.update();
-            sleep(1000);
-            // Move forward 37 inches
-            encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
-            // Rotate Left 45 degrees
-            encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-            // Move Forward 13 inches
-            encoderDrive(robot.DRIVE_SPEED, -12, 12, -12, 12, 1);
-            // Move backwards 5 inches
-            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5,-5, 1);
-            sleep(1000);
-            // Strafe left 90 inches
-            strafeLeft(30, 2);
-            strafeLeft(30, 2);
-            strafeLeft(30, 2);
-        }
-
-        // Hit right condition
-        else if (color_right.red < color_center.red && color_right.red < color_left.red) {
-            telemetry.addLine("Hit right");
-            telemetry.addData("red center", color_center.red);
-            telemetry.addData("red left", color_left.red);
-            telemetry.addData("red right", color_right.red);
-            telemetry.update();
-            sleep(1000);
-            // Move backwards 5 inches
-            encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-            // Strafe right 15.5 inches
-            strafeRight(15.5, 2);
-            // Move forward 15 inches
-            encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
-            // Rotate right 45 degrees
-            encoderDrive(robot.DRIVE_SPEED, -11, -11, -11, -11, 2);
-            // robot.servomarker.setPosition();
-            strafeRight(30, 2);
-            strafeRight(30, 2);
-            strafeRight(30, 2);
+                if (tfod != null) {
+                    tfod.shutdown();
+                }
+            }
         }
     }
 
@@ -218,5 +226,28 @@ public class Autonomous2 extends LinearOpMode {
     }
     public void strafeRight(double inches, double timeout){
         encoderDrive(robot.DRIVE_SPEED, -inches, -inches, inches, inches, timeout);
+    }
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+    }
+
+    // Initialize the Tensor Flow Object Detection engine.
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 }

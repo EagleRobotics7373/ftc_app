@@ -34,6 +34,7 @@ public class Teleop2 extends LinearOpMode {
 
             robot.servoleft.setPosition(.48);
             robot.servoright.setPosition(.41);
+            robot.servomarker.setPosition(0);
 
             // Y button changes lifts to running with both sticks or with just one
             if (liftSwitch % 2 == 0) {
@@ -93,6 +94,9 @@ public class Teleop2 extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Servomarker Position", robot.servomarker.getPosition());
+            telemetry.addData("leftlift", robot.leftlift.getCurrentPosition());
+            telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
             telemetry.update();
         }
     }

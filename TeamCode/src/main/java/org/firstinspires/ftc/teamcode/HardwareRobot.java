@@ -19,7 +19,7 @@ public class HardwareRobot
     public DcMotor leftlift = null;
     public Servo servoleft = null;
     public Servo servoright = null;
-    //public Servo servomarker = null;
+    public Servo servomarker = null;
     public NormalizedColorSensor CSright = null;
     public NormalizedColorSensor CScenter = null;
     public NormalizedColorSensor CSleft = null;
@@ -31,7 +31,7 @@ public class HardwareRobot
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     public static final double COUNTS_PER_INCH_NEVEREST = (COUNTS_PER_MOTOR_NEVEREST) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static final double DRIVE_SPEED = 0.3;
+    public static final double DRIVE_SPEED = 0.2;
 
     public void ZeroPower(){
         frontleft.setPower(0);
@@ -61,7 +61,7 @@ public class HardwareRobot
         leftlift = hwMap.get(DcMotor.class, "leftlift");
         servoleft = hwMap.get(Servo.class, "servoleft");
         servoright = hwMap.get(Servo.class, "servoright");
-        //servomarker = hwMap.get(Servo.class, "servomarker");
+        servomarker = hwMap.get(Servo.class, "servomarker");
         CSright = hwMap.get(NormalizedColorSensor.class, "CSright");
         CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
         CSleft = hwMap.get(NormalizedColorSensor.class, "CSleft");
