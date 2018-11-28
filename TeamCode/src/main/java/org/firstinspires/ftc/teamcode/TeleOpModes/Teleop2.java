@@ -32,8 +32,6 @@ public class Teleop2 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.servoleft.setPosition(.48);
-            robot.servoright.setPosition(.41);
             robot.servomarker.setPosition(0);
 
             // Y button changes lifts to running with both sticks or with just one

@@ -17,12 +17,7 @@ public class HardwareRobot
     public DcMotor backright = null;
     public DcMotor rightlift = null;
     public DcMotor leftlift = null;
-    public Servo servoleft = null;
-    public Servo servoright = null;
     public Servo servomarker = null;
-    public NormalizedColorSensor CSright = null;
-    public NormalizedColorSensor CScenter = null;
-    public NormalizedColorSensor CSleft = null;
 
     /* local OpMode members. */
     HardwareMap hwMap =  null;
@@ -59,11 +54,6 @@ public class HardwareRobot
         backright = hwMap.get(DcMotor.class, "backright");
         rightlift = hwMap.get(DcMotor.class, "rightlift");
         leftlift = hwMap.get(DcMotor.class, "leftlift");
-        servoleft = hwMap.get(Servo.class, "servoleft");
-        servoright = hwMap.get(Servo.class, "servoright");
         servomarker = hwMap.get(Servo.class, "servomarker");
-        CSright = hwMap.get(NormalizedColorSensor.class, "CSright");
-        CScenter = hwMap.get(NormalizedColorSensor.class, "CScenter");
-        CSleft = hwMap.get(NormalizedColorSensor.class, "CSleft");
     }
 }

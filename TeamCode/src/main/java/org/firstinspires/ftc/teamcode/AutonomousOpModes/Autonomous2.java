@@ -57,7 +57,7 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         // Make leftlift and rightlift go down using encoders
-        robot.leftlift.setTargetPosition(3100);
+        /*robot.leftlift.setTargetPosition(3100);
         robot.rightlift.setTargetPosition(3100);
 
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -78,7 +78,10 @@ public class Autonomous2 extends LinearOpMode {
         // Strafe right 5 inches
         encoderDrive(robot.DRIVE_SPEED, -5, -5, 5, 5, 2);
         //Drive forward 20 inches
-        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 5);
+        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 5);*/
+
+        encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
+        encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
 
         initVuforia();
         initTfod();
@@ -96,7 +99,7 @@ public class Autonomous2 extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 3) {
+                        if (updatedRecognitions.size() == 2) {
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
@@ -109,7 +112,13 @@ public class Autonomous2 extends LinearOpMode {
                                     silverMineral2X = (int) recognition.getLeft();
                                 }
                             }
-                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                            if (goldMineralX > silverMineral1X && silverMineral2X == -1)
+                                telemetry.addLine("Right");
+                            else if (goldMineralX < silverMineral1X && silverMineral2X == -1)
+                                telemetry.addLine("Center");
+                            else
+                                telemetry.addLine("Left");
+                            /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     telemetry.addData("Gold Mineral Position", "Left");
                                     // Move backwards 5 inches
@@ -151,16 +160,15 @@ public class Autonomous2 extends LinearOpMode {
                                     // Move backwards 5 inches
                                     encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 1);
                                     sleep(1000);
-                                }
-                            }
+                                }*/
                         }
-                        telemetry.update();
                     }
+                    telemetry.update();
                 }
+            }
 
-                if (tfod != null) {
-                    tfod.shutdown();
-                }
+            if (tfod != null) {
+                tfod.shutdown();
             }
         }
     }
