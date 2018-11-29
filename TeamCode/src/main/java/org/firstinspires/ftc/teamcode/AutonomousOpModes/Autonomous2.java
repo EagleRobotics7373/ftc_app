@@ -80,8 +80,8 @@ public class Autonomous2 extends LinearOpMode {
         //Drive forward 20 inches
         encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 5);*/
 
-        encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
-        encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
+        // encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
+        // encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
 
         initVuforia();
         initTfod();
@@ -94,9 +94,19 @@ public class Autonomous2 extends LinearOpMode {
 
             while (opModeIsActive()) {
                 if (tfod != null) {
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions.size() == 1)
+                        for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)){
+                            telemetry.addLine("Right");
+                        } else
+                            tfod.deactivate();
+                            encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
+                                    -15.5, -15.5, 2);
+                        }
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
                         if (updatedRecognitions.size() == 2) {
@@ -105,19 +115,22 @@ public class Autonomous2 extends LinearOpMode {
                             int silverMineral2X = -1;
                             for (Recognition recognition : updatedRecognitions) {
                                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    goldMineralX = (int) recognition.getLeft();
-                                } else if (silverMineral1X == -1) {
-                                    silverMineral1X = (int) recognition.getLeft();
+                                    goldMineralX = (int) recognition.getLeft()
                                 } else {
                                     silverMineral2X = (int) recognition.getLeft();
                                 }
                             }
-                            if (goldMineralX > silverMineral1X && silverMineral2X == -1)
+
+                            if (goldMineralX > silverMineral1X | goldMineralX > silverMineral2X)
                                 telemetry.addLine("Right");
-                            else if (goldMineralX < silverMineral1X && silverMineral2X == -1)
+                            else if (goldMineralX < silverMineral1X | goldMineralX < silverMineral1X)
                                 telemetry.addLine("Center");
-                            else
+                            else if (goldMineralX == -1 && silverMineral1X != -1 && silverMineral2X != -1)
                                 telemetry.addLine("Left");
+                            else
+                                telemetry.addLine("cannot identify gold mineral");
+
+
                             /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     telemetry.addData("Gold Mineral Position", "Left");
