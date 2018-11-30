@@ -133,6 +133,7 @@ public class Autonomous2 extends LinearOpMode {
                                 } else
                                     telemetry.addLine("Could not identify gold mineral");
                             }
+
                             /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     telemetry.addData("Gold Mineral Position", "Left");
