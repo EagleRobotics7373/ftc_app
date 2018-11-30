@@ -83,11 +83,14 @@ public class Autonomous2 extends LinearOpMode {
         // encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
         // encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
 
-        String position = "right";
-
         initVuforia();
         initTfod();
 
+        recognize();
+    }
+
+    public void recognize() {
+        String position = "right";
         if (opModeIsActive()) {
             // Activate Tensor Flow Object Detection.
             if (tfod != null) {
@@ -97,31 +100,39 @@ public class Autonomous2 extends LinearOpMode {
             while (opModeIsActive()) {
                 if (tfod != null) {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions.size() == 1)
-                        for (Recognition recognition : updatedRecognitions) {
-                            if (position == "right") {
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    telemetry.addLine("Right");
+                    if (updatedRecognitions != null) {
+                        if (updatedRecognitions.size() == 1)
+                            for (Recognition recognition : updatedRecognitions) {
+                                if (position == "right") {
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                        telemetry.addLine("Right");
+                                        telemetry.update();
+                                        sleep(2000);
+                                        return;
+                                    } else
+                                    encoderDrive(robot.DRIVE_SPEED, 16, 16,
+                                            -16, -16, 2);
+                                    position = "center";
+                                } else if (position == "center") {
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                        telemetry.addLine("Center");
+                                        telemetry.update();
+                                        sleep(2000);
+                                        return;
+                                    } else
+                                    encoderDrive(robot.DRIVE_SPEED, 16, 16,
+                                            -16, -16, 2);
+                                    position = "left";
+                                } else if (position == "left"){
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                        telemetry.addLine("Left");
+                                        telemetry.update();
+                                        sleep(2000);
+                                        return;
+                                    }
                                 } else
-                                    tfod.deactivate();
-                                encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
-                                        -15.5, -15.5, 2);
-                                position = "center";
-                            } else if (position == "center") {
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    telemetry.addLine("Center");
-                                } else
-                                    tfod.deactivate();
-                                encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
-                                        -15.5, -15.5, 2);
-                                position = "left";
-                            } else if (position == "left") {
-                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    telemetry.addLine("left");
-                                }
-                            } else
-                                telemetry.addLine("Could not identify gold mineral");
-                        }
+                                    telemetry.addLine("Could not identify gold mineral");
+                            }
                             /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     telemetry.addData("Gold Mineral Position", "Left");
@@ -165,6 +176,7 @@ public class Autonomous2 extends LinearOpMode {
                                     encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 1);
                                     sleep(1000);
                                 }*/
+                    }
                 }
             }
             telemetry.update();
