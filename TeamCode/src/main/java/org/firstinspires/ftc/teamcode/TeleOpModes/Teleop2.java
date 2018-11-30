@@ -92,7 +92,6 @@ public class Teleop2 extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Servomarker Position", robot.servomarker.getPosition());
             telemetry.addData("leftlift", robot.leftlift.getCurrentPosition());
             telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
             telemetry.update();

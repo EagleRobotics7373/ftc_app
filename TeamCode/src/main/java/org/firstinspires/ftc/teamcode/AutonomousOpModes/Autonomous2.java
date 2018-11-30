@@ -83,6 +83,8 @@ public class Autonomous2 extends LinearOpMode {
         // encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
         // encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
 
+        String position = "right";
+
         initVuforia();
         initTfod();
 
@@ -97,40 +99,29 @@ public class Autonomous2 extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions.size() == 1)
                         for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)){
-                            telemetry.addLine("Right");
-                        } else
-                            tfod.deactivate();
-                            encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
-                                    -15.5, -15.5, 2);
-                        }
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-
-                    if (updatedRecognitions != null) {
-                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 2) {
-                            int goldMineralX = -1;
-                            int silverMineral1X = -1;
-                            int silverMineral2X = -1;
-                            for (Recognition recognition : updatedRecognitions) {
+                            if (position == "right") {
                                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                    goldMineralX = (int) recognition.getLeft()
-                                } else {
-                                    silverMineral2X = (int) recognition.getLeft();
+                                    telemetry.addLine("Right");
+                                } else
+                                    tfod.deactivate();
+                                encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
+                                        -15.5, -15.5, 2);
+                                position = "center";
+                            } else if (position == "center") {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    telemetry.addLine("Center");
+                                } else
+                                    tfod.deactivate();
+                                encoderDrive(robot.DRIVE_SPEED, 15.5, 15.5,
+                                        -15.5, -15.5, 2);
+                                position = "left";
+                            } else if (position == "left") {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    telemetry.addLine("left");
                                 }
-                            }
-
-                            if (goldMineralX > silverMineral1X | goldMineralX > silverMineral2X)
-                                telemetry.addLine("Right");
-                            else if (goldMineralX < silverMineral1X | goldMineralX < silverMineral1X)
-                                telemetry.addLine("Center");
-                            else if (goldMineralX == -1 && silverMineral1X != -1 && silverMineral2X != -1)
-                                telemetry.addLine("Left");
-                            else
-                                telemetry.addLine("cannot identify gold mineral");
-
-
+                            } else
+                                telemetry.addLine("Could not identify gold mineral");
+                        }
                             /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     telemetry.addData("Gold Mineral Position", "Left");
@@ -174,21 +165,18 @@ public class Autonomous2 extends LinearOpMode {
                                     encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 1);
                                     sleep(1000);
                                 }*/
-                        }
-                    }
-                    telemetry.update();
                 }
             }
-
-            if (tfod != null) {
-                tfod.shutdown();
-            }
+            telemetry.update();
+        }
+        if (tfod != null) {
+            tfod.shutdown();
         }
     }
 
     // encoderDrive method to make the robot move with input in inches
-    public void encoderDrive ( double speed, double frontleftinches, double frontrightinches,
-                               double backleftinches, double backrightinches, double timeoutS){
+    public void encoderDrive(double speed, double frontleftinches, double frontrightinches,
+                             double backleftinches, double backrightinches, double timeoutS) {
 
         int frontleftTarget;
         int backleftTarget;
@@ -242,12 +230,15 @@ public class Autonomous2 extends LinearOpMode {
             robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
-    public void strafeLeft(double inches, double timeout){
+
+    public void strafeLeft(double inches, double timeout) {
         encoderDrive(robot.DRIVE_SPEED, inches, inches, -inches, -inches, timeout);
     }
-    public void strafeRight(double inches, double timeout){
+
+    public void strafeRight(double inches, double timeout) {
         encoderDrive(robot.DRIVE_SPEED, -inches, -inches, inches, inches, timeout);
     }
+
     private void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
