@@ -16,9 +16,9 @@ import org.firstinspires.ftc.teamcode.HardwareRobot;
 
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous2")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous_Cargo_Depot")
 //@Disabled
-public class Autonomous2 extends LinearOpMode {
+public class Autonomous_Cargo_Depot extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -57,7 +57,7 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         // Make leftlift and rightlift go down using encoders
-        /*robot.leftlift.setTargetPosition(3100);
+        robot.leftlift.setTargetPosition(3100);
         robot.rightlift.setTargetPosition(3100);
 
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -73,20 +73,16 @@ public class Autonomous2 extends LinearOpMode {
 
         // Strafe left 4 inches
         encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 2);
-        // Go Forward 4 inches
-        encoderDrive(robot.DRIVE_SPEED, -4, 4, -4, 4, 2);
-        // Strafe right 5 inches
-        encoderDrive(robot.DRIVE_SPEED, -5, -5, 5, 5, 2);
-        //Drive forward 20 inches
-        encoderDrive(robot.DRIVE_SPEED, -19, 19, -19, 19, 5);*/
-
-        // encoderDrive(robot.DRIVE_SPEED, -7, 7, -7, 7, 5);
-        // encoderDrive(robot.DRIVE_SPEED, -8, -8, 8, 8, 5);
+        // Drive forward 20 inches
+        encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 5);
+        // strafe right 20 inches
+        strafeRight(20, 8);
 
         initVuforia();
         initTfod();
 
         recognize();
+        tfod.deactivate();
     }
 
     public void recognize() {
@@ -107,76 +103,53 @@ public class Autonomous2 extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
-                                        sleep(2000);
+                                        // Move forward 35 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -30, 30, -30, 30, 2);
+                                        // Rotate Left 45 degrees
+                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        // Move forward 10 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 4);
+                                        // Rotate left 90 degrees
+                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        robot.servomarker.setPosition(0);
+                                        sleep(1000);
+                                        // Move backwards 5 inches
+                                        strafeLeft(10, 2);
                                         return;
                                     } else
-                                    encoderDrive(robot.DRIVE_SPEED, 16, 16,
-                                            -16, -16, 2);
+                                        encoderDrive(robot.DRIVE_SPEED, 16, 16,
+                                                -16, -16, 2);
                                     position = "center";
                                 } else if (position == "center") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
-                                        sleep(2000);
+                                        // Move forward 37 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
+                                        // Rotate Left 45 degrees
+                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        robot.servomarker.setPosition(0);
                                         return;
                                     } else
-                                    encoderDrive(robot.DRIVE_SPEED, 16, 16,
-                                            -16, -16, 2);
+                                        encoderDrive(robot.DRIVE_SPEED, 16, 16,
+                                                -16, -16, 2);
                                     position = "left";
-                                } else if (position == "left"){
+                                } else if (position == "left") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
-                                        sleep(2000);
+                                        // Move forward 28 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
+                                        // Rotate left 45 degrees
+                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        strafeRight(10, 2);
+                                        robot.servomarker.setPosition(0);
                                         return;
                                     }
                                 } else
                                     telemetry.addLine("Could not identify gold mineral");
                             }
-
-                            /*if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Left");
-                                    // Move backwards 5 inches
-                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-                                    // Strafe left 15.5 inches
-                                    strafeLeft(15.5, 2);
-                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
-                                    // Move forward 28 inches
-                                    encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
-                                    // Rotate left 45 degrees
-                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-                                    strafeRight(10, 2);
-                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                                    telemetry.addData("Gold Mineral Position", "Right");
-                                    // Move backwards 5 inches
-                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-                                    // Strafe right 15.5 inches
-                                    strafeRight(15.5, 2);
-                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
-                                    // Move forward 15 inches
-                                    encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
-                                    // Rotate left 180 degrees
-                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
-                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
-                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 1);
-                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 2);
-                                    strafeRight(10, 2);
-                                    robot.servomarker.setPosition(0);
-                                } else {
-                                    telemetry.addData("Gold Mineral Position", "Center");
-                                    encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
-                                    // Move forward 37 inches
-                                    encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
-                                    // Rotate Left 45 degrees
-                                    encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-                                    robot.servomarker.setPosition(0);
-                                    // Move Forward 13 inches
-                                    encoderDrive(robot.DRIVE_SPEED, -16, 16, -16, 16, 1);
-                                    // Move backwards 5 inches
-                                    encoderDrive(robot.DRIVE_SPEED, 5, -5, 5, -5, 1);
-                                    sleep(1000);
-                                }*/
                     }
                 }
             }
@@ -229,9 +202,7 @@ public class Autonomous2 extends LinearOpMode {
             robot.frontright.setPower(speed);
             robot.backright.setPower(speed);
 
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.frontleft.isBusy() && robot.frontright.isBusy())) {
+            while (opModeIsActive() && (robot.frontleft.isBusy() && robot.frontright.isBusy())) {
             }
 
             // Use the ZeroPower method to stop all motion
