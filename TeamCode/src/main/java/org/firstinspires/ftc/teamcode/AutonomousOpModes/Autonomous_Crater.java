@@ -73,7 +73,7 @@ public class Autonomous_Crater extends LinearOpMode {
 
         // Strafe left 4 inches
         encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 2);
-        // Drive forward 20 inches
+        // Drive forward 15 inches
         encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 5);
         // strafe right 20 inches
         strafeRight(20, 8);
@@ -103,10 +103,8 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
-                                        // Move forward 10 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
-                                        // Move backwards 5 inches
-                                        strafeLeft(10, 2);
+                                        // Move forward 15 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 2);
                                         return;
                                     } else
                                         encoderDrive(robot.DRIVE_SPEED, 16, 16,
@@ -116,8 +114,8 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
-                                        // Move forward 10 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
+                                        // Move forward 15 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 2);
                                         return;
                                     } else
                                         encoderDrive(robot.DRIVE_SPEED, 16, 16,
@@ -127,8 +125,8 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
-                                        // Move forward 10 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 2);
+                                        // Move forward 15 inches
+                                        encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 2);
                                         return;
                                     }
                                 } else
