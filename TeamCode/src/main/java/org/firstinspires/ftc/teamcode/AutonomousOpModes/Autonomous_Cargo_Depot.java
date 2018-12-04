@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Came
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
+import org.firstinspires.ftc.teamcode.Methods;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
     HardwareRobot robot = new HardwareRobot();
+    Methods methods = new Methods();
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -69,14 +71,14 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
         }
 
-        robot.ZeroPower();
+        methods.ZeroPower();
 
         // Strafe left 4 inches
-        encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4, 2);
+        methods.encoderDriveSame(robot.DRIVE_SPEED, 4, 4, -4, -4);
         // Drive forward 20 inches
-        encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15, 5);
+        methods.encoderDriveSame(robot.DRIVE_SPEED, -15, 15, -15, 15);
         // strafe right 20 inches
-        strafeRight(20, 8);
+        methods.strafeRight(20);
 
         initVuforia();
         initTfod();
@@ -104,46 +106,44 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                         telemetry.addLine("Right");
                                         telemetry.update();
                                         // Move forward 35 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -30, 30, -30, 30, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -30, 30, -30, 30);
                                         // Rotate Left 45 degrees
-                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         // Move forward 10 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -10, 10, -10, 10, 4);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -10, 10, -10, 10);
                                         // Rotate left 90 degrees
-                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         // Move backwards 5 inches
-                                        strafeLeft(10, 2);
+                                        methods.strafeLeft(10);
                                         return;
                                     } else
-                                        encoderDrive(robot.DRIVE_SPEED, 16, 16,
-                                                -16, -16, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "center";
                                 } else if (position == "center") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
                                         // Move forward 37 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -37, 37, -37, 37);
                                         // Rotate Left 45 degrees
-                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         robot.servomarker.setPosition(0);
                                         return;
                                     } else
-                                        encoderDrive(robot.DRIVE_SPEED, 16, 16,
-                                                -16, -16, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "left";
                                 } else if (position == "left") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
                                         // Move forward 28 inches
-                                        encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -28, 28, -28, 28);
                                         // Rotate left 45 degrees
-                                        encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11, 2);
-                                        strafeRight(10, 2);
+                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.strafeRight(10);
                                         robot.servomarker.setPosition(0);
                                         return;
                                     }
@@ -159,10 +159,10 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
             tfod.shutdown();
         }
     }
-
     // encoderDrive method to make the robot move with input in inches
-    public void encoderDrive(double speed, double frontleftinches, double frontrightinches,
-                             double backleftinches, double backrightinches, double timeoutS) {
+    public void encoderDrive(double speedFL, double speedFR, double speedBL, double speedBR,
+                             double frontleftinches, double frontrightinches,
+                             double backleftinches, double backrightinches) {
 
         int frontleftTarget;
         int backleftTarget;
@@ -196,31 +196,23 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
             robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            runtime.reset();
-            robot.frontleft.setPower(speed);
-            robot.backleft.setPower(speed);
-            robot.frontright.setPower(speed);
-            robot.backright.setPower(speed);
+            robot.frontleft.setPower(speedFL);
+            robot.backleft.setPower(speedBL);
+            robot.frontright.setPower(speedFR);
+            robot.backright.setPower(speedBR);
 
-            while (opModeIsActive() && (robot.frontleft.isBusy() && robot.frontright.isBusy())) {
+            while (opModeIsActive() && (robot.frontleft.isBusy() && robot.frontright.isBusy() &&
+                    robot.backleft.isBusy() && robot.backright.isBusy())) {
             }
 
             // Use the ZeroPower method to stop all motion
-            robot.ZeroPower();
+            methods.ZeroPower();
 
             robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }
-
-    public void strafeLeft(double inches, double timeout) {
-        encoderDrive(robot.DRIVE_SPEED, inches, inches, -inches, -inches, timeout);
-    }
-
-    public void strafeRight(double inches, double timeout) {
-        encoderDrive(robot.DRIVE_SPEED, -inches, -inches, inches, inches, timeout);
     }
 
     private void initVuforia() {
