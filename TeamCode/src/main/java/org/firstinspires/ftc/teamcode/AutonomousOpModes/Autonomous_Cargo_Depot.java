@@ -145,6 +145,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                         methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         methods.strafeRight(10);
                                         robot.servomarker.setPosition(0);
+                                        sleep(2000);
                                         return;
                                     }
                                 } else

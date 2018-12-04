@@ -32,8 +32,6 @@ public class Teleop2 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.servomarker.setPosition(0);
-
             // Y button changes lifts to running with both sticks or with just one
             if (liftSwitch % 2 == 0) {
                 int liftControl = (int) (-gamepad2.right_stick_y * 100);
