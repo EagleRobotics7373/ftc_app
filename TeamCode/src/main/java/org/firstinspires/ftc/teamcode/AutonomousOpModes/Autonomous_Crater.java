@@ -32,8 +32,7 @@ public class Autonomous_Crater extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
     HardwareRobot robot = new HardwareRobot();
-    Methods methods = new Methods();
-    private ElapsedTime runtime = new ElapsedTime();
+    Methods methods = new Methods(robot);
 
     @Override
     public void runOpMode() {
@@ -41,18 +40,10 @@ public class Autonomous_Crater extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Stop and reset Encoders
-        robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Run using Encoders
-        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -74,11 +65,11 @@ public class Autonomous_Crater extends LinearOpMode {
         methods.ZeroPower();
 
         // Strafe left 4 inches
-        methods.encoderDriveSame(robot.DRIVE_SPEED, 4, 4, -4, -4);
+        methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
         // Drive forward 20 inches
-        methods.encoderDriveSame(robot.DRIVE_SPEED, -15, 15, -15, 15);
-        // strafe right 20 inches
-        methods.strafeRight(20);
+        methods.encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15);
+        // strafe right 15 inches
+        methods.strafeRight(15);
 
         initVuforia();
         initTfod();
@@ -105,30 +96,97 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
+                                        // Strafe right 5 inches
+                                        methods.strafeRight(5);
                                         // Move forward 10 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -10, 10, -10, 10);
-                                        // Move backwards 5 inches
-                                        methods.strafeLeft(10);
+                                        methods.forward(10);
+                                        // Move backwards 10 inches
+                                        methods.backward(10);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left x inches
+                                        methods.strafeLeft(60);
+                                        robot.DRIVE_SPEED = .3;
+                                        // Turn 45 degrees
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        // Move forward 7 inches
+                                        methods.forward(7);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left 40 inches
+                                        methods.strafeLeft(45);
+                                        robot.DRIVE_SPEED = .3;
+                                        methods.backward(5);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        methods.backward(5);
+                                        robot.servomarker.setPosition(0);
+                                        sleep(1000);
+                                        robot.DRIVE_SPEED = .5;
+                                        methods.strafeLeft(68);
                                         return;
                                     } else
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "center";
                                 } else if (position == "center") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
+                                        // Strage right 5 inches
+                                        methods.strafeRight(5);
                                         // Move forward 10 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -10, 10, -10, 10);
+                                        methods.forward(10);
+                                        // Move backwards 10 inches
+                                        methods.backward(10);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left x inches
+                                        methods.strafeLeft(44);
+                                        robot.DRIVE_SPEED = .3;
+                                        // Turn 45 degrees
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        // Move forward 7 inches
+                                        methods.forward(7);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left 40 inches
+                                        methods.strafeLeft(45);
+                                        robot.DRIVE_SPEED = .3;
+                                        methods.backward(5);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        methods.backward(5);
+                                        robot.servomarker.setPosition(0);
+                                        sleep(1000);
+                                        robot.DRIVE_SPEED = .5;
+                                        methods.strafeLeft(68);
                                         return;
                                     } else
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "left";
                                 } else if (position == "left") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
+                                        // Strafe right 5 inches
+                                        methods.strafeRight(5);
                                         // Move forward 10 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -10, 10, -10, 10);
+                                        methods.forward(10);
+                                        // Move backwards 10 inches
+                                        methods.backward(10);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left x inches
+                                        methods.strafeLeft(28);
+                                        robot.DRIVE_SPEED = .3;
+                                        // Turn 45 degrees
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        // Move forward 7 inches
+                                        methods.forward(7);
+                                        robot.DRIVE_SPEED = .5;
+                                        // Strafe left 40 inches
+                                        methods.strafeLeft(45);
+                                        robot.DRIVE_SPEED = .3;
+                                        methods.backward(5);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        methods.backward(5);
+                                        robot.servomarker.setPosition(0);
+                                        sleep(1000);
+                                        robot.DRIVE_SPEED = .5;
+                                        methods.strafeLeft(68);
                                         return;
                                     }
                                 } else
@@ -143,7 +201,6 @@ public class Autonomous_Crater extends LinearOpMode {
             tfod.shutdown();
         }
     }
-
 
     private void initVuforia() {
         /*

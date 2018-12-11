@@ -4,9 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Disabled
-public class Methods extends LinearOpMode{
-    HardwareRobot robot = new HardwareRobot();
+// @Disabled
+public class Methods{
+    HardwareRobot robot;
+
+    public Methods(HardwareRobot robot) {
+        this.robot = robot;
+    }
 
     public void ZeroPower(){
         robot.frontleft.setPower(0);
@@ -18,8 +22,7 @@ public class Methods extends LinearOpMode{
     }
 
     // encoderDrive method to make the robot move with input in inches
-    public void encoderDrive(double speedFL, double speedFR, double speedBL, double speedBR,
-                             double frontleftinches, double frontrightinches,
+    public void encoderDrive(double speed, double frontleftinches, double frontrightinches,
                              double backleftinches, double backrightinches) {
 
         int frontleftTarget;
@@ -27,93 +30,193 @@ public class Methods extends LinearOpMode{
         int frontrightTarget;
         int backrightTarget;
 
-        if (opModeIsActive()) {
+        robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH_REV);
+        backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH_REV);
+        frontrightTarget = robot.frontright.getCurrentPosition() + (int) (frontrightinches * robot.COUNTS_PER_INCH_REV);
+        backrightTarget = robot.backright.getCurrentPosition() + (int) (backrightinches * robot.COUNTS_PER_INCH_REV);
 
-            frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH_REV);
-            backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH_REV);
-            frontrightTarget = robot.frontright.getCurrentPosition() + (int) (frontrightinches * robot.COUNTS_PER_INCH_REV);
-            backrightTarget = robot.backright.getCurrentPosition() + (int) (backrightinches * robot.COUNTS_PER_INCH_REV);
+        robot.frontleft.setTargetPosition(frontleftTarget);
+        robot.backleft.setTargetPosition(backleftTarget);
+        robot.frontright.setTargetPosition(frontrightTarget);
+        robot.backright.setTargetPosition(backrightTarget);
 
-            robot.frontleft.setTargetPosition(frontleftTarget);
-            robot.backleft.setTargetPosition(backleftTarget);
-            robot.frontright.setTargetPosition(frontrightTarget);
-            robot.backright.setTargetPosition(backrightTarget);
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontleft.setPower(speed);
+        robot.backleft.setPower(speed);
+        robot.frontright.setPower(speed);
+        robot.backright.setPower(speed);
 
-            robot.frontleft.setPower(speedFL);
-            robot.backleft.setPower(speedBL);
-            robot.frontright.setPower(speedFR);
-            robot.backright.setPower(speedBR);
-
-            while (opModeIsActive() && (robot.frontleft.isBusy() && robot.frontright.isBusy() &&
-                    robot.backleft.isBusy() && robot.backright.isBusy())) {
-            }
-
-            // Use the ZeroPower method to stop all motion
-            ZeroPower();
-
-            robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (robot.frontleft.isBusy() && robot.frontright.isBusy() &&
+                robot.backleft.isBusy() && robot.backright.isBusy()) {
         }
+
+        // Use the ZeroPower method to stop all motion
+        ZeroPower();
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    public void encoderDriveSame(double power, double frontleftinches,
-                                 double frontrightinches, double backleftinches,
-                                 double backrightinches){
-        encoderDrive(power, power, power, power, frontleftinches, frontrightinches, backleftinches, backrightinches);
+
+    public void forward(double inches) {
+        encoderDrive(robot.DRIVE_SPEED, -inches, inches, -inches, inches);
+    }
+
+    public void backward(double inches) {
+        encoderDrive(robot.DRIVE_SPEED, inches, -inches, inches, -inches);
     }
 
     public void strafeLeft(double inches) {
-        encoderDriveSame(robot.DRIVE_SPEED, inches, inches, -inches, -inches);
+        encoderDrive(robot.DRIVE_SPEED, inches, inches, -inches, -inches);
     }
 
     public void strafeRight(double inches) {
-        encoderDriveSame(robot.DRIVE_SPEED, -inches, -inches, inches, inches);
+        encoderDrive(robot.DRIVE_SPEED, -inches, -inches, inches, inches);
     }
-    public void coordinateDrive(double x, double y, double power){
-        // double resultant = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        double theta = Math.atan(x/y);
 
-        if (x > 0 && y == 0) {
-            strafeRight(x);
-        } else if (theta > 0 && theta < 90){
-            encoderDrive(Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)),
-                    Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)), -y, -x, -y, x);
-        } else if (y > 0 && x == 0){
-            encoderDriveSame(power, -y, y, -y, y);
-        } else  if (theta > 90 && theta < 180){
-            encoderDrive(Math.abs(Math.cos(theta)), Math.abs(Math.sin(theta)),
-                    Math.abs(Math.cos(theta)), Math.abs(Math.sin(theta)), -x, y, x, y);
-        } else if (x < 0 && y == 0){
-            strafeLeft(-x);
-        } else if (theta > 180 && theta < 270){
-            encoderDrive(Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)),
-                    Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)), -x, y, x, y);
-        } else if (y < 0 && x == 0){
-            encoderDriveSame(power, -y, y, -y, y);
-        } else if (theta > 270 && theta < 360){
-            encoderDrive(Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)),
-                    Math.abs(Math.sin(theta)), Math.abs(Math.cos(theta)), -y, -x, -y, x);
+    public void forwardRight(double inches) {
+        double hypotenuse = Math.sqrt(Math.pow(inches, 2) + Math.pow(inches, 2));
+
+        int frontleftTarget;
+        int backrightTarget;
+
+        robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontleftTarget = -(robot.frontleft.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV));
+        backrightTarget = robot.backright.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV);
+
+        robot.frontleft.setTargetPosition(frontleftTarget);
+        robot.backright.setTargetPosition(backrightTarget);
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.frontleft.setPower(-robot.DRIVE_SPEED);
+        robot.backright.setPower(robot.DRIVE_SPEED);
+
+        while (robot.frontleft.isBusy() && robot.backright.isBusy()) {
         }
+
+        ZeroPower();
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
+    public void forwardLeft(double inches) {
+        double hypotenuse = Math.sqrt(Math.pow(inches, 2) + Math.pow(inches, 2));
 
+        int frontrightTarget;
+        int backleftTarget;
+
+        robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontrightTarget = robot.frontright.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV);
+        backleftTarget = -(robot.backleft.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV));
+
+        robot.frontright.setTargetPosition(frontrightTarget);
+        robot.backleft.setTargetPosition(backleftTarget);
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.frontright.setPower(robot.DRIVE_SPEED);
+        robot.backleft.setPower(-robot.DRIVE_SPEED);
+
+        while (robot.frontright.isBusy() && robot.backleft.isBusy()) {
+        }
+
+        ZeroPower();
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void backRight(double inches) {
+        double hypotenuse = Math.sqrt(Math.pow(inches, 2) + Math.pow(inches, 2));
+        int frontrightTarget;
+        int backleftTarget;
+
+        robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontrightTarget = -(robot.frontright.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV));
+        backleftTarget = robot.backleft.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV);
+
+        robot.frontright.setTargetPosition(frontrightTarget);
+        robot.backleft.setTargetPosition(backleftTarget);
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.frontright.setPower(-robot.DRIVE_SPEED);
+        robot.backleft.setPower(robot.DRIVE_SPEED);
+
+        while (robot.frontright.isBusy() && robot.backleft.isBusy()) {
+        }
+
+        ZeroPower();
+
+        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void backLeft(double inches) {
+        double hypotenuse = Math.sqrt(Math.pow(inches, 2) + Math.pow(inches, 2));
+
+        int frontleftTarget;
+        int backrightTarget;
+
+        robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV);
+        backrightTarget = -(robot.backright.getCurrentPosition() + (int) (hypotenuse * robot.COUNTS_PER_INCH_REV));
+
+        robot.frontleft.setTargetPosition(frontleftTarget);
+        robot.backright.setTargetPosition(backrightTarget);
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.frontleft.setPower(robot.DRIVE_SPEED);
+        robot.backright.setPower(-robot.DRIVE_SPEED);
+
+        while (robot.frontleft.isBusy() && robot.backright.isBusy()) {
+        }
+
+        ZeroPower();
+
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

@@ -19,6 +19,9 @@ public class Teleop2 extends LinearOpMode {
 
         int liftSwitch = 0;
         int directionSwitch = 0;
+        int powerFactor = 1;
+
+        robot.DRIVE_SPEED = .2;
 
         robot.init(hardwareMap);
 
@@ -65,20 +68,20 @@ public class Teleop2 extends LinearOpMode {
                 double y = gamepad1.left_stick_y;
                 double z = gamepad1.right_stick_x;
 
-                robot.frontleft.setPower(y - x - z);
-                robot.backleft.setPower(y + x - z);
-                robot.frontright.setPower(-y - x - z);
-                robot.backright.setPower(-y + x - z);
+                robot.frontleft.setPower(powerFactor * (y - x - z));
+                robot.backleft.setPower(powerFactor * (y + x - z));
+                robot.frontright.setPower(powerFactor * (-y - x - z));
+                robot.backright.setPower(powerFactor * (-y + x - z));
             }
             else if (directionSwitch % 2 == 1){
                 double x = -gamepad1.left_stick_x;
                 double y = -gamepad1.left_stick_y;
                 double z = gamepad1.right_stick_x;
 
-                robot.frontleft.setPower(y - x - z);
-                robot.backleft.setPower(y + x - z);
-                robot.frontright.setPower(-y - x - z);
-                robot.backright.setPower(-y + x - z);
+                robot.frontleft.setPower(powerFactor * (y - x - z));
+                robot.backleft.setPower(powerFactor * (y + x - z));
+                robot.frontright.setPower(powerFactor * (-y - x - z));
+                robot.backright.setPower(powerFactor * (-y + x - z));
             }
 
             if (gamepad2.y) {
@@ -87,11 +90,24 @@ public class Teleop2 extends LinearOpMode {
             if (gamepad1.y) {
                 ++directionSwitch;
             }
+            /*if (gamepad1.x) {
+                if (powerFactor == 0){
+                }
+                else
+                    powerFactor -= .1;
+            }
+            else if (gamepad1.b) {
+                if (powerFactor == 1){
+                }
+                else
+                    powerFactor += .1;
+            }*/
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("leftlift", robot.leftlift.getCurrentPosition());
             telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
+            telemetry.addData("Power Factor: ", powerFactor);
             telemetry.update();
         }
     }

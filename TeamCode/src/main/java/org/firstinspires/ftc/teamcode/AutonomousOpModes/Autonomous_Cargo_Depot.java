@@ -32,8 +32,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
     HardwareRobot robot = new HardwareRobot();
-    Methods methods = new Methods();
-    private ElapsedTime runtime = new ElapsedTime();
+    Methods methods = new Methods(robot);
 
     @Override
     public void runOpMode() {
@@ -74,9 +73,9 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         methods.ZeroPower();
 
         // Strafe left 4 inches
-        methods.encoderDriveSame(robot.DRIVE_SPEED, 4, 4, -4, -4);
+        methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
         // Drive forward 20 inches
-        methods.encoderDriveSame(robot.DRIVE_SPEED, -15, 15, -15, 15);
+        methods.encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15);
         // strafe right 20 inches
         methods.strafeRight(20);
 
@@ -105,44 +104,43 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
-                                        // Move forward 35 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -30, 30, -30, 30);
+                                        // Move forward 30 inches
+                                        methods.forward(30);
                                         // Rotate Left 45 degrees
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         // Move forward 10 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -10, 10, -10, 10);
+                                        methods.forward(10);
                                         // Rotate left 90 degrees
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
-                                        // Move backwards 5 inches
-                                        methods.strafeLeft(10);
+                                        // Strafe left inches
+                                        methods.strafeLeft(70);
                                         return;
                                     } else
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "center";
                                 } else if (position == "center") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
                                         // Move forward 37 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -37, 37, -37, 37);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37);
                                         // Rotate Left 45 degrees
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         robot.servomarker.setPosition(0);
                                         return;
                                     } else
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 16, 16, -16, -16);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
                                     position = "left";
                                 } else if (position == "left") {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
                                         // Move forward 28 inches
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, -28, 28, -28, 28);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28);
                                         // Rotate left 45 degrees
-                                        methods.encoderDriveSame(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
                                         methods.strafeRight(10);
                                         robot.servomarker.setPosition(0);
                                         sleep(2000);
