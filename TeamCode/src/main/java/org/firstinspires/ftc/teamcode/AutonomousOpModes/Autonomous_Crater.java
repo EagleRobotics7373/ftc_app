@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.comp.Flow;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -114,9 +111,13 @@ public class Autonomous_Crater extends LinearOpMode {
                                         // Strafe left 40 inches
                                         methods.strafeLeft(45);
                                         robot.DRIVE_SPEED = .3;
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Rotate 360 degrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Knock off team marker
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
@@ -147,9 +148,13 @@ public class Autonomous_Crater extends LinearOpMode {
                                         // Strafe left 40 inches
                                         methods.strafeLeft(45);
                                         robot.DRIVE_SPEED = .3;
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Rotate 360 defrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Knock off team marker
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
@@ -180,12 +185,17 @@ public class Autonomous_Crater extends LinearOpMode {
                                         // Strafe left 40 inches
                                         methods.strafeLeft(45);
                                         robot.DRIVE_SPEED = .3;
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Rotate 360 degrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
+                                        // Move backwards 5 inches
                                         methods.backward(5);
+                                        // Knock team marker off
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
+                                        // Strafe left 68 inches
                                         methods.strafeLeft(68);
                                         return;
                                     }

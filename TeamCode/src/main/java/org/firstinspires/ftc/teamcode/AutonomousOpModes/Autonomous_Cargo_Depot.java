@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.comp.Flow;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -60,10 +57,8 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         // Make leftlift and rightlift go down using encoders
         robot.leftlift.setTargetPosition(3100);
         robot.rightlift.setTargetPosition(3100);
-
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
 
@@ -73,9 +68,9 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         methods.ZeroPower();
 
         // Strafe left 4 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
+        methods.strafeLeft(4);
         // Drive forward 20 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15);
+        methods.forward(15);
         // strafe right 20 inches
         methods.strafeRight(20);
 
@@ -112,9 +107,10 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                         methods.forward(10);
                                         // Rotate left 90 degrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
+                                        // Knock team marker off
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
-                                        // Strafe left inches
+                                        // Strafe left 70 inches
                                         methods.strafeLeft(70);
                                         return;
                                     } else
@@ -125,9 +121,10 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                         telemetry.addLine("Center");
                                         telemetry.update();
                                         // Move forward 37 inches
-                                        methods.encoderDrive(robot.DRIVE_SPEED, -37, 37, -37, 37);
+                                        methods.forward(37);
                                         // Rotate Left 45 degrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        // Knock off team marker
                                         robot.servomarker.setPosition(0);
                                         return;
                                     } else
@@ -138,10 +135,12 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                         telemetry.addLine("Left");
                                         telemetry.update();
                                         // Move forward 28 inches
-                                        methods.encoderDrive(robot.DRIVE_SPEED, -28, 28, -28, 28);
+                                        methods.forward(28);
                                         // Rotate left 45 degrees
                                         methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                                        // Strafe right 10 inches
                                         methods.strafeRight(10);
+                                        // Knock off team marker
                                         robot.servomarker.setPosition(0);
                                         sleep(2000);
                                         return;
@@ -156,61 +155,6 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         }
         if (tfod != null) {
             tfod.shutdown();
-        }
-    }
-    // encoderDrive method to make the robot move with input in inches
-    public void encoderDrive(double speedFL, double speedFR, double speedBL, double speedBR,
-                             double frontleftinches, double frontrightinches,
-                             double backleftinches, double backrightinches) {
-
-        int frontleftTarget;
-        int backleftTarget;
-        int frontrightTarget;
-        int backrightTarget;
-
-        if (opModeIsActive()) {
-
-            robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            frontleftTarget = robot.frontleft.getCurrentPosition() + (int) (frontleftinches * robot.COUNTS_PER_INCH_REV);
-            backleftTarget = robot.backleft.getCurrentPosition() + (int) (backleftinches * robot.COUNTS_PER_INCH_REV);
-            frontrightTarget = robot.frontright.getCurrentPosition() + (int) (frontrightinches * robot.COUNTS_PER_INCH_REV);
-            backrightTarget = robot.backright.getCurrentPosition() + (int) (backrightinches * robot.COUNTS_PER_INCH_REV);
-
-            robot.frontleft.setTargetPosition(frontleftTarget);
-            robot.backleft.setTargetPosition(backleftTarget);
-            robot.frontright.setTargetPosition(frontrightTarget);
-            robot.backright.setTargetPosition(backrightTarget);
-
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            robot.frontleft.setPower(speedFL);
-            robot.backleft.setPower(speedBL);
-            robot.frontright.setPower(speedFR);
-            robot.backright.setPower(speedBR);
-
-            while (opModeIsActive() && (robot.frontleft.isBusy() && robot.frontright.isBusy() &&
-                    robot.backleft.isBusy() && robot.backright.isBusy())) {
-            }
-
-            // Use the ZeroPower method to stop all motion
-            methods.ZeroPower();
-
-            robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 

@@ -4,18 +4,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class HardwareRobot
-{
+public class HardwareRobot {
     // Public OpMode members.
-    public DcMotor frontleft = null;
-    public DcMotor backleft = null;
-    public DcMotor frontright = null;
-    public DcMotor backright = null;
-    public DcMotor rightlift = null;
-    public DcMotor leftlift = null;
-    public Servo servomarker = null;
+    public DcMotor frontleft;
+    public DcMotor backleft;
+    public DcMotor frontright;
+    public DcMotor backright;
+    public DcMotor rightlift;
+    public DcMotor leftlift;
+    public Servo servomarker;
+    public Servo servolift;
 
-    /* local OpMode members. */
+    // Converting encoder count to inches
     HardwareMap hwMap =  null;
     static final double COUNTS_PER_MOTOR_REV = 1120;
     static final double COUNTS_PER_MOTOR_NEVEREST = 280;
@@ -23,12 +23,11 @@ public class HardwareRobot
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     public static double DRIVE_SPEED = 0.3;
 
-    /* Constructor */
+    // Constructor
     public HardwareRobot(){
-
     }
 
-    /* Initialize standard Hardware interfaces */
+    // Initialize standard Hardware interfaces
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;

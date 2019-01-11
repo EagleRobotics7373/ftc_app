@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
 
@@ -87,21 +88,15 @@ public class Teleop2 extends LinearOpMode {
             if (gamepad2.y) {
                 ++liftSwitch;
             }
-            if (gamepad1.y) {
+            else if (gamepad1.y) {
                 ++directionSwitch;
             }
-            /*if (gamepad1.x) {
-                if (powerFactor == 0){
-                }
-                else
-                    powerFactor -= .1;
+            else if (gamepad2.a) {
+                robot.servolift.setDirection(Servo.Direction.FORWARD);
             }
-            else if (gamepad1.b) {
-                if (powerFactor == 1){
-                }
-                else
-                    powerFactor += .1;
-            }*/
+            else if (gamepad2.b) {
+                robot.servolift.setDirection(Servo.Direction.REVERSE);
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
