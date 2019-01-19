@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,13 +13,16 @@ public class HardwareRobot {
     public DcMotor backright;
     public DcMotor rightlift;
     public DcMotor leftlift;
+    public DcMotor intake;
+    public DcMotor conveyor;
     public Servo servomarker;
-    public Servo servolift;
+    public Servo servointake;
+    public CRServo servopivot;
+    public Servo servoscoop;
 
     // Converting encoder count to inches
     HardwareMap hwMap =  null;
     static final double COUNTS_PER_MOTOR_REV = 1120;
-    static final double COUNTS_PER_MOTOR_NEVEREST = 280;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
     public static double DRIVE_SPEED = 0.3;
@@ -39,6 +43,11 @@ public class HardwareRobot {
         backright = hwMap.get(DcMotor.class, "backright");
         rightlift = hwMap.get(DcMotor.class, "rightlift");
         leftlift = hwMap.get(DcMotor.class, "leftlift");
+        intake = hwMap.get(DcMotor.class, "intake_motor");
+        conveyor = hwMap.get(DcMotor.class, "conveyor");
         servomarker = hwMap.get(Servo.class, "servomarker");
+        servointake = hwMap.get(Servo.class, "servointake");
+        servopivot = hwMap.get(CRServo.class, "servopivot");
+        servoscoop = hwMap.get(Servo.class, "servoscoop");
     }
 }

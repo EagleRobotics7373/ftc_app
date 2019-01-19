@@ -17,6 +17,7 @@ public class Methods{
         robot.backright.setPower(0);
         robot.leftlift.setPower(0);
         robot.rightlift.setPower(0);
+        robot.intake.setPower(0);
     }
 
     // encoderDrive method to make the robot move with input in inches
@@ -216,5 +217,20 @@ public class Methods{
 
         robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void intake(double intake_inches) {
+        int intakeTarget;
+
+        robot.intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeTarget = robot.frontleft.getCurrentPosition() + (int) (intake_inches);
+        robot.intake.setTargetPosition(intakeTarget);
+        robot.intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.intake.setPower(.75);
+        while (robot.intake.isBusy()) {
+        }
+        ZeroPower();
+        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
