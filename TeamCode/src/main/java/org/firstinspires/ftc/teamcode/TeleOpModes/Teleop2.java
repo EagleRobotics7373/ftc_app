@@ -31,6 +31,12 @@ public class Teleop2 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -39,31 +45,32 @@ public class Teleop2 extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Y button changes lifts to running with both sticks or with just one
-            if (liftSwitch % 2 == 0) {
-                int liftControl = (int) (-gamepad2.right_stick_y * 150);
+            if (gamepad2.right_stick_y > .1 | gamepad2.right_stick_y < .1 | gamepad2.left_stick_y > .1 | gamepad2.left_stick_y < .1) {
+                if (liftSwitch % 2 == 0) {
+                    int liftControl = (int) (-gamepad2.right_stick_y * 150);
 
-                robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControl);
-                robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControl);
+                    robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControl);
+                    robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControl);
 
-                robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                robot.rightlift.setPower(1);
-                robot.leftlift.setPower(1);
-            }
+                    robot.rightlift.setPower(1);
+                    robot.leftlift.setPower(1);
+                }
+                else if (liftSwitch % 2 == 1) {
+                    int liftControlright = (int) (-gamepad2.right_stick_y * 150);
+                    int liftControlleft = (int) (-gamepad2.left_stick_y * 150);
 
-            else if (liftSwitch % 2 == 1) {
-                int liftControlright = (int) (-gamepad2.right_stick_y * 150);
-                int liftControlleft = (int) (-gamepad2.left_stick_y * 150);
+                    robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControlright);
+                    robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControlleft);
 
-                robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControlright);
-                robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControlleft);
+                    robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                robot.rightlift.setPower(1);
-                robot.leftlift.setPower(1);
+                    robot.rightlift.setPower(1);
+                    robot.leftlift.setPower(1);
+                }
             }
 
             if (directionSwitch % 2 == 0){
@@ -94,9 +101,9 @@ public class Teleop2 extends LinearOpMode {
                 intakeTarget = robot.intake.getCurrentPosition() + (int) -(gamepad2.left_stick_y * 9);
             }
 
-            robot.intake.setTargetPosition(intakeTarget);
-            robot.intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.intake.setPower(1);
+            // robot.intake.setTargetPosition(intakeTarget);
+            // robot.intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            // robot.intake.setPower(1);
 
             if (gamepad2.y) {
                 ++liftSwitch;

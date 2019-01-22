@@ -47,8 +47,8 @@ public class Autonomous_Crater extends LinearOpMode {
         waitForStart();
 
         // Make leftlift and rightlift go down using encoders
-        robot.leftlift.setTargetPosition(3100);
-        robot.rightlift.setTargetPosition(3100);
+        robot.leftlift.setTargetPosition(2800);
+        robot.rightlift.setTargetPosition(2800);
 
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);

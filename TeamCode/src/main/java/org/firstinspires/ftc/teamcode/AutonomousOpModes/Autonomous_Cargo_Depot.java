@@ -55,8 +55,8 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         waitForStart();
 
         // Make leftlift and rightlift go down using encoders
-        robot.leftlift.setTargetPosition(3100);
-        robot.rightlift.setTargetPosition(3100);
+        robot.leftlift.setTargetPosition(2800);
+        robot.rightlift.setTargetPosition(2800);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.leftlift.setPower(1);
@@ -70,14 +70,14 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         // Strafe left 4 inches
         methods.strafeLeft(4);
         // Drive forward 20 inches
-        methods.forward(15);
-        // strafe right 20 inches
-        methods.strafeRight(20);
+        methods.forward(20);
+        // strafe right 14 inches
+        methods.strafeRight(14);
 
         initVuforia();
         initTfod();
 
-        recognize();
+        // recognize();
         tfod.deactivate();
     }
 

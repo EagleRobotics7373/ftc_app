@@ -25,7 +25,7 @@ public class HardwareRobot {
     static final double COUNTS_PER_MOTOR_REV = 1120;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static double DRIVE_SPEED = 0.3;
+    public static double DRIVE_SPEED = 0.5;
 
     // Constructor
     public HardwareRobot(){
