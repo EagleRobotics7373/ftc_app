@@ -64,9 +64,9 @@ public class Autonomous_Crater extends LinearOpMode {
         // Strafe left 4 inches
         methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
         // Drive forward 20 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, -15, 15, -15, 15);
-        // strafe right 15 inches
-        methods.strafeRight(15);
+        methods.encoderDrive(robot.DRIVE_SPEED, -20, 20, -20, 20);
+        // strafe right 14 inches
+        methods.strafeRight(14);
 
         initVuforia();
         initTfod();
@@ -93,6 +93,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Strafe right 5 inches
                                         methods.strafeRight(5);
                                         // Move forward 10 inches
@@ -130,6 +131,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Strage right 5 inches
                                         methods.strafeRight(5);
                                         // Move forward 10 inches
@@ -167,6 +169,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Strafe right 5 inches
                                         methods.strafeRight(5);
                                         // Move forward 10 inches

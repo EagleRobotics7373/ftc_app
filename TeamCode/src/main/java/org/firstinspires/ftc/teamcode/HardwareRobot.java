@@ -17,15 +17,16 @@ public class HardwareRobot {
     public DcMotor conveyor;
     public Servo servomarker;
     public Servo servointake;
-    public CRServo servopivot;
+    public Servo servopivot;
     public Servo servoscoop;
+    public Servo servonudge;
 
     // Converting encoder count to inches
     HardwareMap hwMap =  null;
     static final double COUNTS_PER_MOTOR_REV = 1120;
     public static final double WHEEL_DIAMETER_INCHES = 4.0;
     public static final double COUNTS_PER_INCH_REV = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static double DRIVE_SPEED = 0.5;
+    public static double DRIVE_SPEED = 0.3;
 
     // Constructor
     public HardwareRobot(){
@@ -47,7 +48,8 @@ public class HardwareRobot {
         conveyor = hwMap.get(DcMotor.class, "conveyor");
         servomarker = hwMap.get(Servo.class, "servomarker");
         servointake = hwMap.get(Servo.class, "servointake");
-        servopivot = hwMap.get(CRServo.class, "servopivot");
+        servopivot = hwMap.get(Servo.class, "servopivot");
         servoscoop = hwMap.get(Servo.class, "servoscoop");
+        servonudge = hwMap.get(Servo.class, "servonudge");
     }
 }

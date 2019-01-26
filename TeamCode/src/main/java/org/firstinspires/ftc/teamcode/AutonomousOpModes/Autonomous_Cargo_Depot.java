@@ -77,7 +77,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         initVuforia();
         initTfod();
 
-        // recognize();
+        recognize();
         tfod.deactivate();
     }
 
@@ -99,6 +99,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Right");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Move forward 30 inches
                                         methods.forward(30);
                                         // Rotate Left 45 degrees
@@ -120,6 +121,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Center");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Move forward 37 inches
                                         methods.forward(37);
                                         // Rotate Left 45 degrees
@@ -134,6 +136,7 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                         telemetry.addLine("Left");
                                         telemetry.update();
+                                        robot.DRIVE_SPEED = 7;
                                         // Move forward 28 inches
                                         methods.forward(28);
                                         // Rotate left 45 degrees
