@@ -17,7 +17,8 @@ public class HardwareRobot {
     public DcMotor conveyor;
     public Servo servomarker;
     public Servo servointake;
-    public Servo servopivot;
+    // public Servo servopivot;
+    public CRServo servopivot;
     public Servo servoscoop;
     public Servo servonudge;
 
@@ -48,7 +49,8 @@ public class HardwareRobot {
         conveyor = hwMap.get(DcMotor.class, "conveyor");
         servomarker = hwMap.get(Servo.class, "servomarker");
         servointake = hwMap.get(Servo.class, "servointake");
-        servopivot = hwMap.get(Servo.class, "servopivot");
+        // servopivot = hwMap.get(Servo.class, "servopivot");
+        servopivot = hwMap.get(CRServo.class, "servopivot");
         servoscoop = hwMap.get(Servo.class, "servoscoop");
         servonudge = hwMap.get(Servo.class, "servonudge");
     }

@@ -46,6 +46,10 @@ public class Autonomous_Crater extends LinearOpMode {
 
         waitForStart();
 
+        robot.intake.setPower(1);
+        sleep(3000);
+        robot.intake.setPower(0);
+
         // Make leftlift and rightlift go down using encoders
         robot.leftlift.setTargetPosition(2800);
         robot.rightlift.setTargetPosition(2800);
@@ -63,8 +67,23 @@ public class Autonomous_Crater extends LinearOpMode {
 
         // Strafe left 4 inches
         methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
+
+        robot.leftlift.setTargetPosition(1400);
+        robot.rightlift.setTargetPosition(1400);
+
+        robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.leftlift.setPower(1);
+        robot.rightlift.setPower(1);
+
+        while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
+        }
+
+        methods.ZeroPower();
+
         // Drive forward 20 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, -20, 20, -20, 20);
+        methods.encoderDrive(robot.DRIVE_SPEED, -18.5, 18.5, -18.5, 18.5);
         // strafe right 14 inches
         methods.strafeRight(14);
 
@@ -122,7 +141,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
-                                        methods.strafeLeft(68);
+                                        // methods.strafeLeft(68);
                                         return;
                                     } else
                                         methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
@@ -160,7 +179,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                         robot.servomarker.setPosition(0);
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
-                                        methods.strafeLeft(68);
+                                        // methods.strafeLeft(68);
                                         return;
                                     } else
                                         methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
@@ -199,7 +218,7 @@ public class Autonomous_Crater extends LinearOpMode {
                                         sleep(1000);
                                         robot.DRIVE_SPEED = .5;
                                         // Strafe left 68 inches
-                                        methods.strafeLeft(68);
+                                        // methods.strafeLeft(68);
                                         return;
                                     }
                                 } else

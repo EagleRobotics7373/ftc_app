@@ -21,8 +21,8 @@ public class Teleop2 extends LinearOpMode {
 
         int liftSwitch = 0;
         int directionSwitch = 0;
-        double pivotPos = robot.servopivot.getPosition();
         int nudge = 0;
+        // double pivotPos = robot.servopivot.getPosition();
         boolean aWasPressed = false;
         boolean gp1yWasPressed = false;
         boolean gp2yWasPressed = false;
@@ -104,6 +104,23 @@ public class Teleop2 extends LinearOpMode {
                     gp2yWasPressed = true;
                 }
             }
+            else if (gamepad2.x) {
+                robot.servointake.setPosition(0);
+            }
+            else if (gamepad2.a) {
+                robot.servointake.setPosition(.1);
+            }
+            else if (gamepad2.b) {
+                robot.servointake.setPosition(.05);
+            }
+            else if (gamepad2.right_bumper) {
+                robot.servopivot.setPower(.75);
+                // pivotPos -= .03;
+            }
+            else if (gamepad2.left_bumper) {
+                robot.servopivot.setPower(-.75);
+                // pivotPos += .03;
+            }
             else if (gamepad1.y) {
                 if (!gp1yWasPressed) {
                     ++directionSwitch;
@@ -115,21 +132,6 @@ public class Teleop2 extends LinearOpMode {
             }
             else if (gamepad1.left_trigger > 0) {
                 robot.conveyor.setPower(-1);
-            }
-            else if (gamepad2.x) {
-                robot.servointake.setPosition(0);
-            }
-            else if (gamepad2.a) {
-                robot.servointake.setPosition(.1);
-            }
-            else if (gamepad2.b) {
-                robot.servointake.setPosition(.05);
-            }
-            else if (gamepad2.right_bumper) {
-                pivotPos -= .03;
-            }
-            else if (gamepad2.left_bumper) {
-                pivotPos += .03;
             }
             else if (gamepad1.x) {
                 robot.servoscoop.setPosition(0);
@@ -152,25 +154,25 @@ public class Teleop2 extends LinearOpMode {
                 aWasPressed = false;
                 gp1yWasPressed = false;
                 gp2yWasPressed = false;
+                robot.servopivot.setPower(0);
                 robot.conveyor.setPower(0);
             }
 
-            if (pivotPos > .3) {
+            /*if (pivotPos > .3) {
                 pivotPos = .3;
             }
             else if (pivotPos < 0) {
                 pivotPos = 0;
-            }
+            }*/
 
-            robot.servopivot.setPosition(pivotPos);
+            // robot.servopivot.setPosition(pivotPos);
 
             // Telemetry Data
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("leftlift", robot.leftlift.getCurrentPosition());
-            telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
+            // telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
             telemetry.addData("intake", robot.intake.getCurrentPosition());
-            telemetry.addData("gamepad2 Position", gamepad2.left_stick_y);
-            telemetry.addData("nudgePos", robot.servonudge.getPosition());
+            // telemetry.addData("gamepad2 Position", gamepad2.left_stick_y);
             telemetry.update();
         }
     }
