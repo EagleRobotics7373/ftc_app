@@ -49,7 +49,7 @@ public class Testing extends LinearOpMode {
         initTfod();
 
         waitForStart();
-        tfod.deactivate();
+        recognize();
 
         // Make leftlift and rightlift go down using encoders
         robot.leftlift.setTargetPosition(2800);
@@ -80,17 +80,52 @@ public class Testing extends LinearOpMode {
         }
 
         // Drive forward 5 inches
-        methods.forward(5);
+        methods.forwardRight(4);
 
         switch (GoldPos) {
             case "Right":
+                // Move forwardright 5 inches
                 methods.forwardRight(5);
+                // Move forward 25 inches
+                methods.forward(25);
+                // Rotate Left 45 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                // Move forward 10 inches
+                methods.forward(10);
+                // Rotate left 90 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
+                methods.backward(5);
+                // Knock team marker off
+                robot.servomarker.setPosition(0);
+                sleep(2000);
+                methods.strafeRight(10);
+                methods.forward(15);
                 break;
             case "Center":
-                methods.forward(10);
+                // Move forward 37 inches
+                methods.forward(37);
+                // Rotate Left 45 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                methods.forward(5);
+                methods.strafeLeft(5);
                 break;
             case "Left":
+                // Move forwardleft 5 inches
                 methods.forwardLeft(5);
+                // Move forward 25 inches
+                methods.forward(25);
+                // Rotate left 45 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                // Strafe right 10 inches
+                methods.strafeRight(10);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                methods.forward(5);
+                methods.strafeLeft(5);
                 break;
         }
     }
@@ -103,10 +138,19 @@ public class Testing extends LinearOpMode {
                 if (updatedRecognitions != null) {
                     if (updatedRecognitions.size() == 2) {
                         int SilverMin = -1;
+                        int GoldMin = -1;
                         for (Recognition recognition : updatedRecognitions) {
                             if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                GoldMin = (int) recognition.getLeft();
                             } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
                                 SilverMin = (int) recognition.getLeft();
+                            }
+                            if (GoldMin > SilverMin){
+                                // Gold on right
+                            } else if (GoldMin < SilverMin) {
+                                // Gold center
+                            } else if (GoldMin == -1 && SilverMin == -1) {
+                                // Gold left
                             }
                             if (GoldMin > SilverMin)
                                 if (position == "right") {
