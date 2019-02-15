@@ -105,7 +105,6 @@ public class Testing extends LinearOpMode {
                         int SilverMin = -1;
                         for (Recognition recognition : updatedRecognitions) {
                             if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                GoldMin = (int) recognition.getLeft();
                             } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
                                 SilverMin = (int) recognition.getLeft();
                             }
