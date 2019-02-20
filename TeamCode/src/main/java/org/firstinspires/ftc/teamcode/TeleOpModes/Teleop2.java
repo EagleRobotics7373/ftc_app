@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
-import org.firstinspires.ftc.teamcode.Methods;
 
 @TeleOp(name="Teleop2")
 //@Disabled
@@ -13,16 +12,20 @@ public class Teleop2 extends LinearOpMode {
 
     // Declare OpMode members.
     HardwareRobot robot = new HardwareRobot();
-    Methods methods = new Methods(robot);
+    //Methods methods = new Methods(robot);
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
 
+        /*waitForStart();
+        robot.init(hardwareMap);
+        while (opModeIsActive()){
+            robot.extension.setPower(gamepad1.left_stick_y);
+            robot.intake.setPower(gamepad1.right_stick_y);
+        }*/
+
         int liftSwitch = 0;
-        int directionSwitch = 0;
-        int nudge = 0;
-        // double pivotPos = robot.servopivot.getPosition();
         boolean aWasPressed = false;
         boolean gp1yWasPressed = false;
         boolean gp2yWasPressed = false;
@@ -76,29 +79,10 @@ public class Teleop2 extends LinearOpMode {
                     robot.leftlift.setPower(1);
                 }
             }
+            robot.extension.setPower(gamepad1.left_stick_y);
+            robot.intake.setPower(gamepad1.right_stick_y);
 
-            if (directionSwitch % 2 == 0){
-                double x = gamepad1.left_stick_x;
-                double y = gamepad1.left_stick_y;
-                double z = gamepad1.right_stick_x;
-
-                robot.frontleft.setPower(y - x - z);
-                robot.backleft.setPower(y + x - z);
-                robot.frontright.setPower(-y - x - z);
-                robot.backright.setPower(-y + x - z);
-            }
-            else if (directionSwitch % 2 == 1){
-                double x = -gamepad1.left_stick_x;
-                double y = -gamepad1.left_stick_y;
-                double z = gamepad1.right_stick_x;
-
-                robot.frontleft.setPower(y - x - z);
-                robot.backleft.setPower(y + x - z);
-                robot.frontright.setPower(-y - x - z);
-                robot.backright.setPower(-y + x - z);
-            }
-
-            if (gamepad2.y) {
+            /*if (gamepad2.y) {
                 if (!gp2yWasPressed) {
                     ++liftSwitch;
                     gp2yWasPressed = true;
@@ -126,7 +110,6 @@ public class Teleop2 extends LinearOpMode {
                     ++directionSwitch;
                     gp1yWasPressed = true;
                 }
-            }
             else if (gamepad1.right_trigger > 0) {
                 robot.conveyor.setPower(1);
             }
@@ -154,16 +137,19 @@ public class Teleop2 extends LinearOpMode {
                 aWasPressed = false;
                 gp1yWasPressed = false;
                 gp2yWasPressed = false;
-                robot.servopivot.setPower(0);
-                robot.conveyor.setPower(0);
             }
 
-            /*if (pivotPos > .3) {
-                pivotPos = .3;
-            }
-            else if (pivotPos < 0) {
-                pivotPos = 0;
-            }*/
+            robot.extension.setPower(gamepad1.left_trigger);
+            robot.intake.setPower(gamepad1.right_trigger);*/
+
+            double x = gamepad1.left_stick_x;
+            double y = gamepad1.left_stick_y;
+            double z = gamepad1.right_stick_x;
+
+            robot.frontleft.setPower(y - x - z);
+            robot.backleft.setPower(y + x - z);
+            robot.frontright.setPower(-y - x - z);
+            robot.backright.setPower(-y + x - z);
 
             // robot.servopivot.setPosition(pivotPos);
 

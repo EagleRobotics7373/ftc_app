@@ -31,13 +31,30 @@ public class Testing extends LinearOpMode {
     private TFObjectDetector tfod;
 
     HardwareRobot robot = new HardwareRobot();
-    Methods methods = new Methods(robot);
+    // Methods methods = new Methods(robot);
     String GoldPos = "";
+    int SilverMin1X = -1;
+    int SilverMin2X = -1;
+    int GoldMin = -1;
+
+    int GoldMinLeft;
+    int GoldMinRight;
+    int GoldMinTop;
+    int GoldMinBot;
+    int SilverMinLeft;
+    int SilverMinRight;
+    int SilverMinTop;
+    int SilverMinBot;
 
     @Override
     public void runOpMode() {
 
-        robot.init(hardwareMap);
+        waitForStart();
+        initVuforia();
+        initTfod();
+        recognize();
+
+        /*robot.init(hardwareMap);
 
         // Stop and reset Encoders
         robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,150 +96,103 @@ public class Testing extends LinearOpMode {
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
         }
 
-        // Drive forward 5 inches
+        // Drive forward 4 inches
         methods.forwardRight(4);
 
         switch (GoldPos) {
             case "Right":
-                // Move forwardright 5 inches
-                methods.forwardRight(5);
-                // Move forward 25 inches
-                methods.forward(25);
-                // Rotate Left 45 degrees
-                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                // Move forward 10 inches
-                methods.forward(10);
-                // Rotate left 90 degrees
-                methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
-                methods.backward(5);
-                // Knock team marker off
+                // Move forwardright 15 inches
+                methods.forwardRight(15);
+                // Move forward 22 inches
+                methods.forward(22);
+                // Rotate Right 135 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, -33, -33, -33, -33);
+                // Strafe right 5
+                methods.strafeRight(5);
+                // Knock off team marker
                 robot.servomarker.setPosition(0);
-                sleep(2000);
-                methods.strafeRight(10);
-                methods.forward(15);
+                sleep(1000);
+                // Strafe left 70 inches
+                methods.strafeLeft(70);
                 break;
             case "Center":
-                // Move forward 37 inches
-                methods.forward(37);
-                // Rotate Left 45 degrees
-                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                // Move forward 50 inches
+                methods.forward(50);
+                // Rotate Left 135 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 33, 33, 33, 33);
                 // Knock off team marker
                 robot.servomarker.setPosition(0);
                 sleep(1000);
-                methods.forward(5);
-                methods.strafeLeft(5);
+                // Strafe left 72 inches
+                methods.strafeLeft(72);
+
                 break;
             case "Left":
-                // Move forwardleft 5 inches
-                methods.forwardLeft(5);
-                // Move forward 25 inches
-                methods.forward(25);
+                // Move forwardleft 15 inches
+                methods.forwardLeft(15);
+                // Move forward 22 inches
+                methods.forward(22);
                 // Rotate left 45 degrees
                 methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                // Strafe right 10 inches
-                methods.strafeRight(10);
+                // Strafe right 5
+                methods.strafeRight(5);
                 // Knock off team marker
                 robot.servomarker.setPosition(0);
                 sleep(1000);
-                methods.forward(5);
-                methods.strafeLeft(5);
+                // Strafe left 70 inches
+                methods.strafeLeft(70);
                 break;
-        }
+        }*/
     }
 
     public void recognize() {
-        tfod.activate();
+        if (opModeIsActive()) {
+            if (tfod != null) {
+                tfod.activate();
+            }
+        }
+
         while (opModeIsActive()) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
-                    if (updatedRecognitions.size() == 2) {
-                        int SilverMin = -1;
-                        int GoldMin = -1;
-                        for (Recognition recognition : updatedRecognitions) {
-                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                GoldMin = (int) recognition.getLeft();
-                            } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
-                                SilverMin = (int) recognition.getLeft();
-                            }
-                            if (GoldMin > SilverMin){
-                                // Gold on right
-                            } else if (GoldMin < SilverMin) {
-                                // Gold center
-                            } else if (GoldMin == -1 && SilverMin == -1) {
-                                // Gold left
-                            }
-                            if (GoldMin > SilverMin)
-                                if (position == "right") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Right");
-                                        telemetry.update();
-                                        robot.DRIVE_SPEED = .7;
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        // Move forward 30 inches
-                                        methods.forward(30);
-                                        // Rotate Left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Move forward 10 inches
-                                        methods.forward(10);
-                                        // Rotate left 90 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
-                                        methods.backward(5);
-                                        // Knock team marker off
-                                        robot.servomarker.setPosition(0);
-                                        sleep(2000);
-                                        methods.strafeRight(10);
-                                        methods.forward(15);
-                                        // Strafe left 70 inches
-                                        // methods.strafeLeft(70);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "center";
-                                } else if (position == "center") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Center");
-                                        telemetry.update();
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        robot.DRIVE_SPEED = .7;
-                                        // Move forward 37 inches
-                                        methods.forward(37);
-                                        // Rotate Left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        methods.forward(5);
-                                        methods.strafeLeft(5);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "left";
-                                } else if (position == "left") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Left");
-                                        telemetry.update();
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        robot.DRIVE_SPEED = .7;
-                                        // Move forward 28 inches
-                                        methods.forward(28);
-                                        // Rotate left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Strafe right 10 inches
-                                        methods.strafeRight(10);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        methods.forward(5);
-                                        methods.strafeLeft(5);
-                                        return;
-                                    }
-                                } else
-                                    telemetry.addLine("Could not identify gold mineral");
-                        }
+                    for (Recognition recognition : updatedRecognitions) {
+                        //if (recognition.getBottom() > 0 && recognition.getTop() > 0 && recognition.getRight() > 0 && recognition.getLeft()) {
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                /*int GoldMinLeft = (int) recognition.getLeft();
+                                int GoldMinRight = (int) recognition.getRight();
+                                int GoldMinTop = (int) recognition.getTop();
+                                int GoldMinBot = (int) recognition.getBottom();
+                                telemetry.addData("GoldMin Left", GoldMinLeft);
+                                telemetry.addData("GoldMinRight ", GoldMinRight);
+                                telemetry.addData("GoldMinTop", GoldMinTop);
+                                telemetry.addData("GoldMinBot", GoldMinBot);*/
+                            GoldMin = (int) recognition.getLeft();
+                        } else if (SilverMin1X == -1) {
+                                    /*int SilverMinLeft = (int) recognition.getLeft();
+                                    int SilverMinRight = (int) recognition.getRight();
+                                    int SilverMinTop = (int) recognition.getTop();
+                                    int SilverMinBot = (int) recognition.getBottom();
+                                    telemetry.addData("SilverMinLeft", SilverMinLeft);
+                                    telemetry.addData("SilverMinRight ", SilverMinRight);
+                                    telemetry.addData("SilverMinTop", SilverMinTop);
+                                    telemetry.addData("SilverMinBot", SilverMinBot);*/
+                                    SilverMin1X = (int) recognition.getLeft();
+                        } else
+                            SilverMin2X = (int) recognition.getLeft();
+                        //}
+                    }
+                    if (GoldMin < SilverMin1X) {
+                        GoldPos = "Right";
+                    } else if (GoldMin > SilverMin1X) {
+                        GoldPos = "Center";
+                    } else if (SilverMin1X != -1 && SilverMin2X != -1) {
+                        GoldPos = "Left";
+                    } else {
+                        telemetry.addLine("Could not identify gold mineral");
+                        telemetry.addData("GoldPos", GoldPos);
+                        telemetry.addData("SilverMin1X", SilverMin1X);
+                        telemetry.addData("SilverMin2X", SilverMin2X);
                     }
                 }
             }
@@ -250,6 +220,7 @@ public class Testing extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = .3;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }

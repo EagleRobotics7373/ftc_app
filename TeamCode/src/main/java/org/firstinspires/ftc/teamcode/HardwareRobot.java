@@ -14,13 +14,8 @@ public class HardwareRobot {
     public DcMotor rightlift;
     public DcMotor leftlift;
     public DcMotor intake;
-    public DcMotor conveyor;
+    public DcMotor extension;
     public Servo servomarker;
-    public Servo servointake;
-    // public Servo servopivot;
-    public CRServo servopivot;
-    public Servo servoscoop;
-    public Servo servonudge;
 
     // Converting encoder count to inches
     HardwareMap hwMap =  null;
@@ -45,13 +40,8 @@ public class HardwareRobot {
         backright = hwMap.get(DcMotor.class, "backright");
         rightlift = hwMap.get(DcMotor.class, "rightlift");
         leftlift = hwMap.get(DcMotor.class, "leftlift");
-        intake = hwMap.get(DcMotor.class, "intake_motor");
-        conveyor = hwMap.get(DcMotor.class, "conveyor");
+        intake = hwMap.get(DcMotor.class, "intake");
+        extension = hwMap.get(DcMotor.class, "extension");
         servomarker = hwMap.get(Servo.class, "servomarker");
-        servointake = hwMap.get(Servo.class, "servointake");
-        // servopivot = hwMap.get(Servo.class, "servopivot");
-        servopivot = hwMap.get(CRServo.class, "servopivot");
-        servoscoop = hwMap.get(Servo.class, "servoscoop");
-        servonudge = hwMap.get(Servo.class, "servonudge");
     }
 }

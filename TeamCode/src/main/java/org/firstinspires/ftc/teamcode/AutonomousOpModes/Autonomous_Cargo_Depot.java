@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
 import org.firstinspires.ftc.teamcode.Methods;
 
-import java.util.List;
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous_Cargo_Depot")
+@Autonomous(name = "Autonomous_Cargo_Depot")
 //@Disabled
 public class Autonomous_Cargo_Depot extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -26,10 +27,16 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
             "V6GGlYFedJpbmh+v6Ilj2zIeHYErnfCZvZIP7PfcO/sAgGSKQQxVPlvz9kV14trx+8vTBqnN8eSrb8xF" +
             "i/XLU9b+wV7cvpxTPeno9kvoROfH/mEZO/6iZEi89Evd7ZBgqu+NeK4Nfg+oMvcozYkIrTatKqPZ6iY7" +
             "w/YWLKGdib+I98";
+
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
+
     HardwareRobot robot = new HardwareRobot();
     Methods methods = new Methods(robot);
+    String GoldPos = "";
+    int SilverMin1X = -1;
+    int SilverMin2X = -1;
+    int GoldMin = -1;
 
     @Override
     public void runOpMode() {
@@ -37,30 +44,21 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Stop and reset Encoders
-        robot.frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         // Run using Encoders
-        robot.frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //initVuforia();
+        //initTfod();
 
         waitForStart();
-
-        robot.intake.setPower(1);
-        sleep(3000);
-        robot.intake.setPower(0);
+        //recognize();
+        GoldPos = "Center";
 
         // Make leftlift and rightlift go down using encoders
-        robot.leftlift.setTargetPosition(2800);
-        robot.rightlift.setTargetPosition(2800);
+        /*robot.leftlift.setTargetPosition(3300);
+        robot.rightlift.setTargetPosition(3300);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.leftlift.setPower(1);
@@ -84,104 +82,88 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         robot.rightlift.setPower(1);
 
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
+        }*/
+
+        methods.strafeLeft(3);
+        // Drive forward 4 inches
+        methods.forward(3);
+        methods.strafeRight(3);
+
+        switch (GoldPos) {
+            case "Right":
+                // Move forwardright 25 inches
+                methods.forwardRight(25);
+                // Move forward 25 inches
+                methods.forward(25);
+                // Rotate Left 135 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 33, 33, 33, 33);
+                // Strafe right 5
+                methods.strafeRight(15);
+                methods.backward(5);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                // Strafe left 70 inches
+                methods.strafeLeft(70);
+                methods.strafeLeft(4);
+                break;
+            case "Center":
+                // Move forward 50 inches
+                methods.forward(55);
+                // Rotate Left 45 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                methods.strafeRight(5);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                // Strafe left 76 inches
+                methods.backward(76);
+
+                break;
+            case "Left":
+                // Move forwardleft 25 inches
+                methods.forwardLeft(25);
+                // Move forward 25 inches
+                methods.forward(25);
+                // Rotate left 45 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
+                // Strafe right 5
+                methods.strafeRight(15);
+                methods.forward(5);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                // Strafe left 70 inches
+                methods.strafeLeft(73);
+                break;
         }
-
-        // Drive forward 20 inches
-        methods.forward(17);
-        // strafe right 14 inches
-        methods.strafeRight(14);
-
-        initVuforia();
-        initTfod();
-
-        recognize();
-        tfod.deactivate();
     }
 
     public void recognize() {
-        String position = "right";
-        if (opModeIsActive()) {
-            // Activate Tensor Flow Object Detection.
+        tfod.activate();
+        while (opModeIsActive()) {
             if (tfod != null) {
-                tfod.activate();
-            }
-
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        if (updatedRecognitions.size() == 1)
-                            for (Recognition recognition : updatedRecognitions) {
-                                if (position == "right") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Right");
-                                        telemetry.update();
-                                        robot.DRIVE_SPEED = .7;
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        // Move forward 30 inches
-                                        methods.forward(30);
-                                        // Rotate Left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Move forward 10 inches
-                                        methods.forward(10);
-                                        // Rotate left 90 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 22, 22, 22, 22);
-                                        methods.backward(5);
-                                        // Knock team marker off
-                                        robot.servomarker.setPosition(0);
-                                        sleep(2000);
-                                        methods.strafeRight(10);
-                                        methods.forward(15);
-                                        // Strafe left 70 inches
-                                        // methods.strafeLeft(70);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "center";
-                                } else if (position == "center") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Center");
-                                        telemetry.update();
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        robot.DRIVE_SPEED = .7;
-                                        // Move forward 37 inches
-                                        methods.forward(37);
-                                        // Rotate Left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        methods.forward(5);
-                                        methods.strafeLeft(5);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "left";
-                                } else if (position == "left") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Left");
-                                        telemetry.update();
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        robot.DRIVE_SPEED = .7;
-                                        // Move forward 28 inches
-                                        methods.forward(28);
-                                        // Rotate left 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Strafe right 10 inches
-                                        methods.strafeRight(10);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        methods.forward(5);
-                                        methods.strafeLeft(5);
-                                        return;
-                                    }
-                                } else
-                                    telemetry.addLine("Could not identify gold mineral");
-                            }
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getBottom() > 0 & recognition.getBottom() > 0 &
+                                recognition.getRight() > 0 & recognition.getLeft() > 0) {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                GoldMin = (int) recognition.getLeft();
+                            } else if (SilverMin1X == -1) {
+                                SilverMin1X = (int) recognition.getLeft();
+                            } else
+                                SilverMin2X = (int) recognition.getLeft();
+                        }
+                    }
+                    if (GoldMin > SilverMin1X) {
+                        GoldPos = "Right";
+                    } else if (GoldMin < SilverMin1X) {
+                        GoldPos = "Center";
+                    } else if (SilverMin1X != -1 && SilverMin2X != -1) {
+                        GoldPos = "Left";
+                    } else {
+                        telemetry.addLine("Could not identify gold mineral");
                     }
                 }
             }

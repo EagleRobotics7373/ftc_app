@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
 import org.firstinspires.ftc.teamcode.Methods;
 
-import java.util.List;
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="Autonomous_Crater")
+@Autonomous(name = "Autonomous_Crater")
 //@Disabled
 public class Autonomous_Crater extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -26,37 +27,36 @@ public class Autonomous_Crater extends LinearOpMode {
             "V6GGlYFedJpbmh+v6Ilj2zIeHYErnfCZvZIP7PfcO/sAgGSKQQxVPlvz9kV14trx+8vTBqnN8eSrb8xF" +
             "i/XLU9b+wV7cvpxTPeno9kvoROfH/mEZO/6iZEi89Evd7ZBgqu+NeK4Nfg+oMvcozYkIrTatKqPZ6iY7" +
             "w/YWLKGdib+I98";
+
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
+
     HardwareRobot robot = new HardwareRobot();
     Methods methods = new Methods(robot);
+    String GoldPos = "";
+    int SilverMin1X = -1;
+    int SilverMin2X = -1;
+    int GoldMin = -1;
 
     @Override
     public void runOpMode() {
+
+        waitForStart();
 
         robot.init(hardwareMap);
 
         // Stop and reset Encoders
         robot.rightlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         // Run using Encoders
         robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        waitForStart();
-
-        robot.intake.setPower(1);
-        sleep(3000);
-        robot.intake.setPower(0);
-
         // Make leftlift and rightlift go down using encoders
-        robot.leftlift.setTargetPosition(2800);
+        /*robot.leftlift.setTargetPosition(2800);
         robot.rightlift.setTargetPosition(2800);
-
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         robot.leftlift.setPower(1);
         robot.rightlift.setPower(1);
 
@@ -66,7 +66,7 @@ public class Autonomous_Crater extends LinearOpMode {
         methods.ZeroPower();
 
         // Strafe left 4 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, 4, 4, -4, -4);
+        methods.strafeLeft(4);
 
         robot.leftlift.setTargetPosition(1400);
         robot.rightlift.setTargetPosition(1400);
@@ -78,152 +78,91 @@ public class Autonomous_Crater extends LinearOpMode {
         robot.rightlift.setPower(1);
 
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
+        }*/
+
+        GoldPos = "Left";
+
+        methods.strafeLeft(3);
+        // Drive forward 3 inches
+        methods.forward(3);
+        methods.strafeRight(3);
+
+        switch (GoldPos) {
+            case "Right":
+                // Move forwardright 15 inches
+                methods.forwardRight(25);
+                // Move forward 10 inches
+                methods.forward(8);
+                // Move backwards 15 inches
+                methods.backward(13);
+                // Strafe left 60 inches
+                methods.strafeLeft(60);
+                // Turn right 135 degrees
+                methods.encoderDrive(robot.DRIVE_SPEED, -33, -33, -33, -33);
+                methods.backward(9);
+                // Strafe right 45 inches
+                methods.strafeRight(45);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                methods.strafeLeft(65);
+                break;
+            case "Center":
+                // Move forward 24 inches
+                methods.forward(24);
+                methods.backward(10);
+                methods.strafeLeft(45);
+                methods.encoderDrive(robot.DRIVE_SPEED, -33, -33, -33, -33);
+                methods.backward(9);
+                methods.strafeRight(45);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                methods.strafeLeft(64);
+                break;
+            case "Left":
+                methods.forwardLeft(25);
+                methods.forward(8);
+                methods.backward(13);
+                methods.strafeLeft(30);
+                methods.encoderDrive(robot.DRIVE_SPEED, -33, -33, -33, -33);
+                methods.backward(8);
+                // Strafe right 45 inches
+                methods.strafeRight(45);
+                // Knock off team marker
+                robot.servomarker.setPosition(0);
+                sleep(1000);
+                methods.strafeLeft(65);
+                break;
         }
-
-        methods.ZeroPower();
-
-        // Drive forward 20 inches
-        methods.encoderDrive(robot.DRIVE_SPEED, -18.5, 18.5, -18.5, 18.5);
-        // strafe right 14 inches
-        methods.strafeRight(14);
-
-        initVuforia();
-        initTfod();
-
-        recognize();
-        tfod.deactivate();
     }
 
     public void recognize() {
-        String position = "right";
-        if (opModeIsActive()) {
-            // Activate Tensor Flow Object Detection.
+        tfod.activate();
+        while (opModeIsActive()) {
             if (tfod != null) {
-                tfod.activate();
-            }
-
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                        if (updatedRecognitions.size() == 1)
-                            for (Recognition recognition : updatedRecognitions) {
-                                if (position == "right") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Right");
-                                        telemetry.update();
-                                        robot.DRIVE_SPEED = 7;
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        // Move forward 10 inches
-                                        methods.forward(10);
-                                        // Move backwards 10 inches
-                                        methods.backward(10);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left x inches
-                                        methods.strafeLeft(60);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Turn 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Move forward 7 inches
-                                        methods.forward(7);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left 40 inches
-                                        methods.strafeLeft(45);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Rotate 360 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        robot.DRIVE_SPEED = .5;
-                                        // methods.strafeLeft(68);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "center";
-                                } else if (position == "center") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Center");
-                                        telemetry.update();
-                                        robot.DRIVE_SPEED = 7;
-                                        // Strage right 5 inches
-                                        methods.strafeRight(5);
-                                        // Move forward 10 inches
-                                        methods.forward(10);
-                                        // Move backwards 10 inches
-                                        methods.backward(10);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left x inches
-                                        methods.strafeLeft(44);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Turn 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Move forward 7 inches
-                                        methods.forward(7);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left 40 inches
-                                        methods.strafeLeft(45);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Rotate 360 defrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Knock off team marker
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        robot.DRIVE_SPEED = .5;
-                                        // methods.strafeLeft(68);
-                                        return;
-                                    } else
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 16, 16, -16, -16);
-                                    position = "left";
-                                } else if (position == "left") {
-                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                        telemetry.addLine("Left");
-                                        telemetry.update();
-                                        robot.DRIVE_SPEED = 7;
-                                        // Strafe right 5 inches
-                                        methods.strafeRight(5);
-                                        // Move forward 10 inches
-                                        methods.forward(10);
-                                        // Move backwards 10 inches
-                                        methods.backward(10);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left x inches
-                                        methods.strafeLeft(28);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Turn 45 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
-                                        // Move forward 7 inches
-                                        methods.forward(7);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left 40 inches
-                                        methods.strafeLeft(45);
-                                        robot.DRIVE_SPEED = .3;
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Rotate 360 degrees
-                                        methods.encoderDrive(robot.DRIVE_SPEED, 46, 46, 46, 46);
-                                        // Move backwards 5 inches
-                                        methods.backward(5);
-                                        // Knock team marker off
-                                        robot.servomarker.setPosition(0);
-                                        sleep(1000);
-                                        robot.DRIVE_SPEED = .5;
-                                        // Strafe left 68 inches
-                                        // methods.strafeLeft(68);
-                                        return;
-                                    }
-                                } else
-                                    telemetry.addLine("Could not identify gold mineral");
-                            }
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        //if (recognition.getBottom() > 0 && recognition.getTop() > 0 && recognition.getRight() > 0 && recognition.getLeft()) {
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            GoldMin = (int) recognition.getLeft();
+                        } else {
+                            if (SilverMin1X == -1) {
+                                SilverMin1X = (int) recognition.getLeft();
+                            } else
+                                SilverMin2X = (int) recognition.getLeft();
+                        }
+                        if (GoldMin > SilverMin1X) {
+                            GoldPos = "Right";
+                        } else if (GoldMin < SilverMin1X) {
+                            GoldPos = "Center";
+                        } else if (SilverMin1X != -1 && SilverMin2X != -1) {
+                            GoldPos = "Left";
+                        } else {
+                            telemetry.addLine("Could not identify gold mineral");
+                        }
+                        //}
                     }
                 }
             }
@@ -235,9 +174,8 @@ public class Autonomous_Crater extends LinearOpMode {
     }
 
     private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
+
+        // Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
@@ -245,8 +183,6 @@ public class Autonomous_Crater extends LinearOpMode {
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
     }
 
     // Initialize the Tensor Flow Object Detection engine.
