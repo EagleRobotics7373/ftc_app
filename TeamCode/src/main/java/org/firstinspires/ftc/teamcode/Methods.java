@@ -17,7 +17,6 @@ public class Methods{
         robot.backright.setPower(0);
         robot.leftlift.setPower(0);
         robot.rightlift.setPower(0);
-        robot.intake.setPower(0);
     }
 
     // encoderDrive method to make the robot move with input in inches

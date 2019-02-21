@@ -34,12 +34,15 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
     HardwareRobot robot = new HardwareRobot();
     Methods methods = new Methods(robot);
     String GoldPos = "";
-    int SilverMin1X = -1;
-    int SilverMin2X = -1;
-    int GoldMin = -1;
+    float SilverMin1X = -1;
+    float SilverMin2X = -1;
+    float GoldMin = -1;
 
     @Override
     public void runOpMode() {
+
+        initVuforia();
+        initTfod();
 
         robot.init(hardwareMap);
 
@@ -53,8 +56,8 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         //initTfod();
 
         waitForStart();
-        //recognize();
-        GoldPos = "Center";
+        GoldPos = "";
+        recognize();
 
         // Make leftlift and rightlift go down using encoders
         /*robot.leftlift.setTargetPosition(3300);
@@ -84,14 +87,13 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
         }*/
 
-        methods.strafeLeft(3);
+        // methods.strafeLeft(3);
         // Drive forward 4 inches
-        methods.forward(3);
-        methods.strafeRight(3);
-
+        // methods.forward(3);
+        // methods.strafeRight(3);
         switch (GoldPos) {
             case "Right":
-                // Move forwardright 25 inches
+                /*// Move forwardright 25 inches
                 methods.forwardRight(25);
                 // Move forward 25 inches
                 methods.forward(25);
@@ -105,10 +107,11 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 sleep(1000);
                 // Strafe left 70 inches
                 methods.strafeLeft(70);
-                methods.strafeLeft(4);
+                methods.strafeLeft(4);*/
+                telemetry.addData("GoldPos", GoldPos);
                 break;
             case "Center":
-                // Move forward 50 inches
+                /*// Move forward 50 inches
                 methods.forward(55);
                 // Rotate Left 45 degrees
                 methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
@@ -117,11 +120,11 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 robot.servomarker.setPosition(0);
                 sleep(1000);
                 // Strafe left 76 inches
-                methods.backward(76);
-
+                methods.backward(76);*/
+                telemetry.addData("GoldPos", GoldPos);
                 break;
             case "Left":
-                // Move forwardleft 25 inches
+                /*// Move forwardleft 25 inches
                 methods.forwardLeft(25);
                 // Move forward 25 inches
                 methods.forward(25);
@@ -134,40 +137,48 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 robot.servomarker.setPosition(0);
                 sleep(1000);
                 // Strafe left 70 inches
-                methods.strafeLeft(73);
+                methods.strafeLeft(73);*/
+                telemetry.addData("GoldPos", GoldPos);
                 break;
         }
+        telemetry.update();
     }
 
     public void recognize() {
         tfod.activate();
-        while (opModeIsActive()) {
+        for (int i = 0; i < 5 & opModeIsActive(); i++) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
+                    telemetry.addData("size",updatedRecognitions.size());
                     for (Recognition recognition : updatedRecognitions) {
                         if (recognition.getBottom() > 0 & recognition.getBottom() > 0 &
                                 recognition.getRight() > 0 & recognition.getLeft() > 0) {
                             if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                GoldMin = (int) recognition.getLeft();
+                                GoldMin = recognition.getLeft();
                             } else if (SilverMin1X == -1) {
-                                SilverMin1X = (int) recognition.getLeft();
+                                SilverMin1X = recognition.getLeft();
                             } else
-                                SilverMin2X = (int) recognition.getLeft();
+                                SilverMin2X = recognition.getLeft();
                         }
                     }
-                    if (GoldMin > SilverMin1X) {
+                    if (GoldMin < SilverMin1X) {
                         GoldPos = "Right";
-                    } else if (GoldMin < SilverMin1X) {
+                        return;
+                    } else if (GoldMin > SilverMin1X) {
                         GoldPos = "Center";
+                        return;
                     } else if (SilverMin1X != -1 && SilverMin2X != -1) {
                         GoldPos = "Left";
+                        return;
                     } else {
                         telemetry.addLine("Could not identify gold mineral");
+                        telemetry.update();
+                        sleep(200);
+
                     }
                 }
             }
-            telemetry.update();
         }
         if (tfod != null) {
             tfod.shutdown();
