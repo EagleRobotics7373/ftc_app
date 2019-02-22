@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.List;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
@@ -34,9 +34,6 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
     HardwareRobot robot = new HardwareRobot();
     Methods methods = new Methods(robot);
     String GoldPos = "";
-    float SilverMin1X = -1;
-    float SilverMin2X = -1;
-    float GoldMin = -1;
 
     @Override
     public void runOpMode() {
@@ -52,15 +49,13 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         // Run using Encoders
         robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //initVuforia();
-        //initTfod();
 
         waitForStart();
         GoldPos = "";
-        recognize();
+        recognize(550, 425, 425, 350);
 
         // Make leftlift and rightlift go down using encoders
-        /*robot.leftlift.setTargetPosition(3300);
+        robot.leftlift.setTargetPosition(3300);
         robot.rightlift.setTargetPosition(3300);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -85,15 +80,21 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
         robot.rightlift.setPower(1);
 
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
-        }*/
+        }
 
-        // methods.strafeLeft(3);
+        methods.strafeLeft(3);
         // Drive forward 4 inches
-        // methods.forward(3);
-        // methods.strafeRight(3);
+        methods.forward(3);
+        methods.strafeRight(6);
+        if (GoldPos == "Try Again") {
+            recognize(400, 325, 475, 400);
+        }
+        methods.strafeLeft(3);
+        telemetry.addData("GoldPos", GoldPos);
+
         switch (GoldPos) {
             case "Right":
-                /*// Move forwardright 25 inches
+                // Move forwardright 25 inches
                 methods.forwardRight(25);
                 // Move forward 25 inches
                 methods.forward(25);
@@ -107,11 +108,11 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 sleep(1000);
                 // Strafe left 70 inches
                 methods.strafeLeft(70);
-                methods.strafeLeft(4);*/
+                methods.strafeLeft(4);
                 telemetry.addData("GoldPos", GoldPos);
                 break;
             case "Center":
-                /*// Move forward 50 inches
+                // Move forward 50 inches
                 methods.forward(55);
                 // Rotate Left 45 degrees
                 methods.encoderDrive(robot.DRIVE_SPEED, 11, 11, 11, 11);
@@ -120,11 +121,11 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 robot.servomarker.setPosition(0);
                 sleep(1000);
                 // Strafe left 76 inches
-                methods.backward(76);*/
+                methods.backward(76);
                 telemetry.addData("GoldPos", GoldPos);
                 break;
             case "Left":
-                /*// Move forwardleft 25 inches
+                // Move forwardleft 25 inches
                 methods.forwardLeft(25);
                 // Move forward 25 inches
                 methods.forward(25);
@@ -137,23 +138,34 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                 robot.servomarker.setPosition(0);
                 sleep(1000);
                 // Strafe left 70 inches
-                methods.strafeLeft(73);*/
+                methods.strafeLeft(73);
                 telemetry.addData("GoldPos", GoldPos);
                 break;
+            case "Try Again":
+                recognize(550, 425, 425, 350);
+                break;
         }
+        telemetry.addData("GoldPos", GoldPos);
         telemetry.update();
     }
 
-    public void recognize() {
+    public void recognize(int botconstraint, int topconstraint, int rightconstraint, int leftconstraint) {
+        float SilverMin1X = -1;
+        float SilverMin2X = -1;
+        float GoldMin = -1;
+
         tfod.activate();
+        sleep(1000);
         for (int i = 0; i < 5 & opModeIsActive(); i++) {
+            int minFound = 0;
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
-                    telemetry.addData("size",updatedRecognitions.size());
+                    telemetry.addData("size", updatedRecognitions.size());
                     for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getBottom() > 0 & recognition.getBottom() > 0 &
-                                recognition.getRight() > 0 & recognition.getLeft() > 0) {
+                        if (recognition.getBottom() <= botconstraint & recognition.getTop() >= topconstraint &
+                                recognition.getRight() <= rightconstraint & recognition.getLeft() <= leftconstraint) {
+                            minFound++;
                             if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                 GoldMin = recognition.getLeft();
                             } else if (SilverMin1X == -1) {
@@ -162,23 +174,28 @@ public class Autonomous_Cargo_Depot extends LinearOpMode {
                                 SilverMin2X = recognition.getLeft();
                         }
                     }
-                    if (GoldMin < SilverMin1X) {
-                        GoldPos = "Right";
-                        return;
-                    } else if (GoldMin > SilverMin1X) {
-                        GoldPos = "Center";
-                        return;
+                    if (GoldMin != -1) {
+                        if (GoldMin < SilverMin1X) {
+                            GoldPos = "Right";
+                            return;
+                        } else if (GoldMin > SilverMin1X) {
+                            GoldPos = "Center";
+                            return;
+                        }
                     } else if (SilverMin1X != -1 && SilverMin2X != -1) {
                         GoldPos = "Left";
                         return;
-                    } else {
+                    } else
                         telemetry.addLine("Could not identify gold mineral");
-                        telemetry.update();
-                        sleep(200);
-
-                    }
+                    telemetry.update();
+                    sleep(200);
                 }
             }
+            if (minFound == 1) {
+                GoldPos = "Try Again";
+                return;
+            }
+
         }
         if (tfod != null) {
             tfod.shutdown();

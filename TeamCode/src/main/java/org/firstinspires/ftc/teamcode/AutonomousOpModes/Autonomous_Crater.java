@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.AutonomousOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.List;
@@ -34,14 +33,12 @@ public class Autonomous_Crater extends LinearOpMode {
     HardwareRobot robot = new HardwareRobot();
     Methods methods = new Methods(robot);
     String GoldPos = "";
-    int SilverMin1X = -1;
-    int SilverMin2X = -1;
-    int GoldMin = -1;
 
     @Override
     public void runOpMode() {
 
-        waitForStart();
+        initVuforia();
+        initTfod();
 
         robot.init(hardwareMap);
 
@@ -52,13 +49,17 @@ public class Autonomous_Crater extends LinearOpMode {
         robot.rightlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        waitForStart();
+        GoldPos = "";
+        recognize(550, 425, 425, 350);
+
         // Make leftlift and rightlift go down using encoders
-        /*robot.leftlift.setTargetPosition(2800);
-        robot.rightlift.setTargetPosition(2800);
+        robot.leftlift.setTargetPosition(3300);
+        robot.rightlift.setTargetPosition(3300);
         robot.leftlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightlift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.leftlift.setPower(1);
-        robot.rightlift.setPower(1);
+        robot.rightlift.setPower(.6);
 
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
         }
@@ -78,14 +79,17 @@ public class Autonomous_Crater extends LinearOpMode {
         robot.rightlift.setPower(1);
 
         while (robot.leftlift.isBusy() && robot.rightlift.isBusy()) {
-        }*/
-
-        GoldPos = "Left";
+        }
 
         methods.strafeLeft(3);
-        // Drive forward 3 inches
+        // Drive forward 4 inches
         methods.forward(3);
-        methods.strafeRight(3);
+        methods.strafeRight(6);
+        if (GoldPos == "Try Again") {
+            recognize(400, 325, 475, 400);
+        }
+        methods.strafeLeft(3);
+        telemetry.addData("GoldPos", GoldPos);
 
         switch (GoldPos) {
             case "Right":
@@ -135,38 +139,57 @@ public class Autonomous_Crater extends LinearOpMode {
                 methods.strafeLeft(65);
                 break;
         }
+        telemetry.addData("GoldPos", GoldPos);
+        telemetry.update();
     }
 
-    public void recognize() {
+    public void recognize(int botconstraint, int topconstraint, int rightconstraint, int leftconstraint) {
+        float SilverMin1X = -1;
+        float SilverMin2X = -1;
+        float GoldMin = -1;
+
         tfod.activate();
-        while (opModeIsActive()) {
+        sleep(1000);
+        for (int i = 0; i < 5 & opModeIsActive(); i++) {
+            int minFound = 0;
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
+                    telemetry.addData("size", updatedRecognitions.size());
                     for (Recognition recognition : updatedRecognitions) {
-                        //if (recognition.getBottom() > 0 && recognition.getTop() > 0 && recognition.getRight() > 0 && recognition.getLeft()) {
-                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            GoldMin = (int) recognition.getLeft();
-                        } else {
-                            if (SilverMin1X == -1) {
-                                SilverMin1X = (int) recognition.getLeft();
+                        if (recognition.getBottom() <= botconstraint & recognition.getTop() >= topconstraint &
+                                recognition.getRight() <= rightconstraint & recognition.getLeft() <= leftconstraint) {
+                            minFound++;
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                GoldMin = recognition.getLeft();
+                            } else if (SilverMin1X == -1) {
+                                SilverMin1X = recognition.getLeft();
                             } else
-                                SilverMin2X = (int) recognition.getLeft();
+                                SilverMin2X = recognition.getLeft();
                         }
-                        if (GoldMin > SilverMin1X) {
-                            GoldPos = "Right";
-                        } else if (GoldMin < SilverMin1X) {
-                            GoldPos = "Center";
-                        } else if (SilverMin1X != -1 && SilverMin2X != -1) {
-                            GoldPos = "Left";
-                        } else {
-                            telemetry.addLine("Could not identify gold mineral");
-                        }
-                        //}
                     }
+                    if (GoldMin != -1) {
+                        if (GoldMin < SilverMin1X) {
+                            GoldPos = "Right";
+                            return;
+                        } else if (GoldMin > SilverMin1X) {
+                            GoldPos = "Center";
+                            return;
+                        }
+                    } else if (SilverMin1X != -1 && SilverMin2X != -1) {
+                        GoldPos = "Left";
+                        return;
+                    } else
+                        telemetry.addLine("Could not identify gold mineral");
+                    telemetry.update();
+                    sleep(200);
                 }
             }
-            telemetry.update();
+            if (minFound == 1) {
+                GoldPos = "Try Again";
+                return;
+            }
+
         }
         if (tfod != null) {
             tfod.shutdown();

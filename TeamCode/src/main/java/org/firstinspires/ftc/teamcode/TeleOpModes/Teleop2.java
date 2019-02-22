@@ -19,13 +19,6 @@ public class Teleop2 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        /*waitForStart();
-        robot.init(hardwareMap);
-        while (opModeIsActive()){
-            robot.extension.setPower(gamepad1.left_stick_y);
-            robot.intake.setPower(gamepad1.right_stick_y);
-        }*/
-
         int liftSwitch = 0;
         boolean gp2yWasPressed = false;
 
@@ -50,9 +43,9 @@ public class Teleop2 extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Y button changes lifts to running with both sticks or with just one
-            if (gamepad2.right_stick_y > .1 | gamepad2.right_stick_y < .1 | gamepad2.left_stick_y > .1 | gamepad2.left_stick_y < .1) {
+            //if (gamepad2.right_stick_y > .1 | gamepad2.right_stick_y < .1 | gamepad2.left_stick_y > .1 | gamepad2.left_stick_y < .1) {
                 if (liftSwitch % 2 == 0) {
-                    int liftControl = (int) (-gamepad2.right_stick_y * 50);
+                    int liftControl = (int) (-gamepad2.right_stick_y * 150);
                     robot.extensionlift.setPower(-gamepad2.left_stick_y);
 
                     robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControl);
@@ -65,8 +58,8 @@ public class Teleop2 extends LinearOpMode {
                     robot.leftlift.setPower(1);
                 }
                 else if (liftSwitch % 2 == 1) {
-                    int liftControlright = (int) (-gamepad2.right_stick_y * 50);
-                    int liftControlleft = (int) (-gamepad2.left_stick_y * 50);
+                    int liftControlright = (int) (-gamepad2.right_stick_y * 150);
+                    int liftControlleft = (int) (-gamepad2.left_stick_y * 150);
 
                     robot.rightlift.setTargetPosition(robot.rightlift.getCurrentPosition() + liftControlright);
                     robot.leftlift.setTargetPosition(robot.leftlift.getCurrentPosition() + liftControlleft);
@@ -77,7 +70,7 @@ public class Teleop2 extends LinearOpMode {
                     robot.rightlift.setPower(1);
                     robot.leftlift.setPower(1);
                 }
-            }
+           // }
 
             robot.extension.setPower(gamepad2.left_trigger + (-gamepad2.right_trigger));
 
@@ -92,60 +85,7 @@ public class Teleop2 extends LinearOpMode {
                 robot.servointake.setDirection(DcMotorSimple.Direction.REVERSE);
             } else
                 gp2yWasPressed = false;
-            /*
-            else if (gamepad2.x) {
-                robot.servointake.setPosition(0);
-            }
-            else if (gamepad2.a) {
-                robot.servointake.setPosition(.1);
-            }
-            else if (gamepad2.b) {
-                robot.servointake.setPosition(.05);
-            }
-            else if (gamepad2.right_bumper) {
-                robot.servopivot.setPower(.75);
-                // pivotPos -= .03;
-            }
-            else if (gamepad2.left_bumper) {
-                robot.servopivot.setPower(-.75);
-                // pivotPos += .03;
-            }
-            else if (gamepad1.y) {
-                if (!gp1yWasPressed) {
-                    ++directionSwitch;
-                    gp1yWasPressed = true;
-                }
-            else if (gamepad1.right_trigger > 0) {
-                robot.conveyor.setPower(1);
-            }
-            else if (gamepad1.left_trigger > 0) {
-                robot.conveyor.setPower(-1);
-            }
-            else if (gamepad1.x) {
-                robot.servoscoop.setPosition(0);
-            }
-            else if (gamepad1.b) {
-                robot.servoscoop.setPosition(.85);
-            }
-            else if (gamepad1.a) {
-                if (!aWasPressed) {
-                    if (nudge % 2 == 0) {
-                        robot.servonudge.setPosition(.35);
-                    } else if (nudge % 2 == 1) {
-                        robot.servonudge.setPosition(.75);
-                    }
-                    ++nudge;
-                    aWasPressed = true;
-                }
-            }
-            else {
-                aWasPressed = false;
-                gp1yWasPressed = false;
-                gp2yWasPressed = false;
-            }
 
-            robot.extension.setPower(gamepad1.left_trigger);
-            robot.intake.setPower(gamepad1.right_trigger);*/
 
             double x = gamepad1.left_stick_x;
             double y = gamepad1.left_stick_y;
@@ -156,14 +96,10 @@ public class Teleop2 extends LinearOpMode {
             robot.frontright.setPower(-y - x - z);
             robot.backright.setPower(-y + x - z);
 
-            // robot.servopivot.setPosition(pivotPos);
-
             // Telemetry Data
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("leftlift", robot.leftlift.getCurrentPosition());
-            // telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
-            telemetry.addData("intake", robot.extensionlift.getCurrentPosition());
-            // telemetry.addData("gamepad2 Position", gamepad2.left_stick_y);
+            telemetry.addData("rightlift", robot.rightlift.getCurrentPosition());
             telemetry.update();
         }
     }

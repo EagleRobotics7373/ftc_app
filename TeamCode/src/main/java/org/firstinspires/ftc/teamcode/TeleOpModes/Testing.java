@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.HardwareRobot;
 import org.firstinspires.ftc.teamcode.Methods;
 
 @TeleOp(name = "Testing", group = "Concept")
-//@Disabled
+@Disabled
 public class Testing extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
